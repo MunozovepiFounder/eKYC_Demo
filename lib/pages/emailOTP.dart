@@ -187,6 +187,7 @@ class _EmailOTPPageState extends State<EmailOTPPage> {
                                 MaterialPageRoute(
                                   builder:
                                       (context) => Detailspage(
+                                        eKYCamendment: false,
                                         newStatus: true,
                                         addressChanged: widget.addressChanged,
                                       ),

@@ -86,6 +86,7 @@ class Option1Landing extends StatelessWidget {
                               (context) => Detailspage(
                                 newStatus: false,
                                 addressChanged: false,
+                                eKYCamendment: true,
                               ),
                         ),
                       );

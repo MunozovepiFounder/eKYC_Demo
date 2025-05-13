@@ -185,8 +185,14 @@ class NullBox extends StatelessWidget {
 class MAccordion extends StatefulWidget {
   final String label;
   final List<Widget> children;
+  final bool danger; // optional parameter
 
-  const MAccordion({super.key, required this.label, required this.children});
+  const MAccordion({
+    super.key,
+    required this.label,
+    required this.children,
+    this.danger = false, // default is false
+  });
 
   @override
   State<MAccordion> createState() => _MAccordionState();
@@ -207,12 +213,18 @@ class _MAccordionState extends State<MAccordion> {
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: ShapeDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(
+            color: widget.danger ? Colors.red : Colors.transparent,
+            width: 1.5,
+          ),
+        ),
         shadows: [
           BoxShadow(
-            color: Color(0x19000000),
+            color: const Color(0x19000000),
             blurRadius: 8,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
             spreadRadius: 0,
           ),
         ],
@@ -228,7 +240,6 @@ class _MAccordionState extends State<MAccordion> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   BodyBold16(text: widget.label),
-
                   AnimatedRotation(
                     turns: _isOpen ? 0.5 : 0,
                     duration: const Duration(milliseconds: 200),

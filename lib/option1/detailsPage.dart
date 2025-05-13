@@ -16,8 +16,13 @@ import 'package:intl/intl.dart';
 class Detailspage extends StatefulWidget {
   final bool addressChanged;
   final bool newStatus;
+  final bool eKYCamendment;
 
-  Detailspage({required this.addressChanged, required this.newStatus});
+  Detailspage({
+    required this.addressChanged,
+    required this.newStatus,
+    required this.eKYCamendment,
+  });
 
   @override
   State<Detailspage> createState() => _DetailspageState();
@@ -80,7 +85,7 @@ class _DetailspageState extends State<Detailspage> {
   bool consentsDetailsunChanged = false;
 
   //the triggers
-  bool eKYCamendment = false; //option 1
+  //bool eKYCamendment = true; //option 2
   bool emailChanged = false;
   bool mobileChanged = false;
 
@@ -118,6 +123,20 @@ class _DetailspageState extends State<Detailspage> {
                           : 'Update details',
                 ),
                 SS40(),
+
+                widget.eKYCamendment
+                    ? Column(
+                      children: [
+                        WarningBox(
+                          alertHeading: 'Profile review required',
+                          alertText:
+                              'To avoid any disruption to your banking services, please confirm or update the details highlighted in red.',
+                        ),
+
+                        SS24(),
+                      ],
+                    )
+                    : NullBox(),
 
                 //the conditions
                 widget.newStatus
@@ -160,6 +179,13 @@ class _DetailspageState extends State<Detailspage> {
                 ),
                 SS24(),
                 MAccordion(
+                  danger:
+                      !widget.eKYCamendment
+                          ? false
+                          : (personalDetailsChanged == false &&
+                              personalDetailsunChanged == false)
+                          ? true
+                          : false,
                   label: 'Personal details',
                   children: [
                     SS24(),
@@ -256,13 +282,13 @@ class _DetailspageState extends State<Detailspage> {
                           //bottom spacing
                           SS40(),
 
-                          eKYCamendment
+                          widget.eKYCamendment
                               ? Column(
                                 children: [
                                   DGPrimaryButton(
                                     onTap: () {
                                       setState(() {
-                                        personalDetailsChanged = false;
+                                        personalDetailsunChanged = true;
                                       });
                                     },
                                     buttonText: 'My details have not changed',
@@ -293,6 +319,13 @@ class _DetailspageState extends State<Detailspage> {
 
                 //the addresss
                 MAccordion(
+                  danger:
+                      !widget.eKYCamendment
+                          ? false
+                          : (addressDetailsChanged == false &&
+                              addressDetailsunChanged == false)
+                          ? true
+                          : false,
                   label: 'Address details',
                   children: [
                     Padding(
@@ -371,11 +404,15 @@ class _DetailspageState extends State<Detailspage> {
 
                           SS40(),
 
-                          eKYCamendment
+                          widget.eKYCamendment
                               ? Column(
                                 children: [
                                   DGPrimaryButton(
-                                    onTap: () {},
+                                    onTap: () {
+                                      setState(() {
+                                        addressDetailsunChanged = true;
+                                      });
+                                    },
                                     buttonText: 'My details have not changed',
                                   ),
                                   SS16(),
@@ -401,6 +438,13 @@ class _DetailspageState extends State<Detailspage> {
 
                 //contact details
                 MAccordion(
+                  danger:
+                      !widget.eKYCamendment
+                          ? false
+                          : (contactDetailsChanged == false &&
+                              contactDetailsunChanged == false)
+                          ? true
+                          : false,
                   label: 'Contact details',
                   children: [
                     Padding(
@@ -418,7 +462,7 @@ class _DetailspageState extends State<Detailspage> {
                           //mobile number
                           ContactNumberField(
                             codeFieldWidth: 108,
-                            numberFieldWidth: 188,
+                            numberFieldWidth: 178,
                             labelText: 'Phone Number',
                             onChanged: (value) {
                               print('Full number: $value');
@@ -460,11 +504,15 @@ class _DetailspageState extends State<Detailspage> {
 
                           SS40(),
 
-                          eKYCamendment
+                          widget.eKYCamendment
                               ? Column(
                                 children: [
                                   DGPrimaryButton(
-                                    onTap: () {},
+                                    onTap: () {
+                                      setState(() {
+                                        contactDetailsunChanged = true;
+                                      });
+                                    },
                                     buttonText: 'My details have not changed',
                                   ),
                                   SS16(),
@@ -490,6 +538,14 @@ class _DetailspageState extends State<Detailspage> {
 
                 //education and empolyment
                 MAccordion(
+                  danger:
+                      !widget.eKYCamendment
+                          ? false
+                          : (educationDetailsChanged == false &&
+                              educationDetailsunChanged == false)
+                          ? true
+                          : false,
+
                   label: 'Education and employment details',
                   children: [
                     Padding(
@@ -676,11 +732,15 @@ class _DetailspageState extends State<Detailspage> {
                           // the buttons
                           SS40(),
 
-                          eKYCamendment
+                          widget.eKYCamendment
                               ? Column(
                                 children: [
                                   DGPrimaryButton(
-                                    onTap: () {},
+                                    onTap: () {
+                                      setState(() {
+                                        educationDetailsunChanged = true;
+                                      });
+                                    },
                                     buttonText: 'My details have not changed',
                                   ),
                                   SS16(),
@@ -706,6 +766,14 @@ class _DetailspageState extends State<Detailspage> {
 
                 //the financial details
                 MAccordion(
+                  danger:
+                      !widget.eKYCamendment
+                          ? false
+                          : (financeDetailsChanged == false &&
+                              financeDetailsunChanged == false)
+                          ? true
+                          : false,
+
                   label: 'Finance details',
                   children: [
                     Padding(
@@ -767,11 +835,15 @@ class _DetailspageState extends State<Detailspage> {
                           //bottom spacing
                           SS40(),
 
-                          eKYCamendment
+                          widget.eKYCamendment
                               ? Column(
                                 children: [
                                   DGPrimaryButton(
-                                    onTap: () {},
+                                    onTap: () {
+                                      setState(() {
+                                        financeDetailsunChanged = true;
+                                      });
+                                    },
                                     buttonText: 'My details have not changed',
                                   ),
                                   SS16(),
@@ -797,6 +869,13 @@ class _DetailspageState extends State<Detailspage> {
 
                 //consents
                 MAccordion(
+                  danger:
+                      !widget.eKYCamendment
+                          ? false
+                          : (consentsDetailsChanged == false &&
+                              consentsDetailsunChanged == false)
+                          ? true
+                          : false,
                   label: 'Consents',
                   children: [
                     YesNoRadioRow(
@@ -829,11 +908,15 @@ class _DetailspageState extends State<Detailspage> {
                     //bottom spacing
                     SS40(),
 
-                    eKYCamendment
+                    widget.eKYCamendment
                         ? Column(
                           children: [
                             DGPrimaryButton(
-                              onTap: () {},
+                              onTap: () {
+                                setState(() {
+                                  consentsDetailsunChanged = true;
+                                });
+                              },
                               buttonText: 'My details have not changed',
                             ),
 
@@ -864,7 +947,12 @@ class _DetailspageState extends State<Detailspage> {
                         !addressDetailsChanged &&
                         !educationDetailsChanged &&
                         !financeDetailsChanged &&
-                        !consentsDetailsChanged) {
+                        !consentsDetailsChanged &&
+                        !personalDetailsunChanged &&
+                        !consentsDetailsunChanged &&
+                        !educationDetailsunChanged &&
+                        !financeDetailsunChanged &&
+                        !consentsDetailsunChanged) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('No changes made, you cannot proceed'),

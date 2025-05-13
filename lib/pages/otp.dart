@@ -177,6 +177,7 @@ class _DefaultOTPPageState extends State<DefaultOTPPage> {
                                     (context) => Detailspage(
                                       addressChanged: widget.addressChanged,
                                       newStatus: true,
+                                      eKYCamendment: false,
                                     ),
                               ),
                             );
