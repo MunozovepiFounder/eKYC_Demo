@@ -4,6 +4,10 @@ import 'package:ekyc_prototypes/components/fonts.dart';
 import 'package:ekyc_prototypes/components/input.dart';
 import 'package:ekyc_prototypes/components/layout.dart';
 import 'package:ekyc_prototypes/components/status.dart';
+import 'package:ekyc_prototypes/pages/address.dart';
+import 'package:ekyc_prototypes/pages/consent.dart';
+import 'package:ekyc_prototypes/pages/liveliness.dart';
+import 'package:ekyc_prototypes/pages/otp.dart';
 import 'package:flutter/material.dart';
 
 class Detailspage extends StatefulWidget {
@@ -30,6 +34,47 @@ class _DetailspageState extends State<Detailspage> {
   final TextEditingController _addressLine3 = TextEditingController();
   final TextEditingController _city = TextEditingController(text: 'Rose Hill');
   final TextEditingController _postalCode = TextEditingController(text: '1234');
+
+  //contact details
+  final TextEditingController _email = TextEditingController(
+    text: 'email@gmail.com',
+  );
+
+  //education and employment
+  String? emplyedType = 'matrix';
+  final TextEditingController _customerNumberController =
+      TextEditingController();
+
+  //finance
+  final TextEditingController _monthlyIncome = TextEditingController();
+
+  final TextEditingController _sourceOfWealth = TextEditingController();
+
+  final TextEditingController _sourceOfFunds = TextEditingController();
+
+  final TextEditingController _taxNumber = TextEditingController();
+  List<String> selectedList = [];
+
+  bool? marketConsent = true;
+  bool? consentCKYC = true;
+
+  //the logic to identify what has changed
+  bool personalDetailsChanged = false;
+  bool addressDetailsChanged = false;
+  bool contactDetailsChanged = false;
+  bool educationDetailsChanged = false;
+  bool financeDetailsChanged = false;
+  bool consentsDetailsChanged = false;
+
+  bool personalDetailsunChanged = false;
+  bool addressDetailsunChanged = false;
+  bool contactDetailsunChanged = false;
+  bool educationDetailsunChanged = false;
+  bool financeDetailsunChanged = false;
+  bool consentsDetailsunChanged = false;
+
+  //the triggers
+  bool eKYCamendment = false; //option 1
 
   @override
   void dispose() {
@@ -62,7 +107,7 @@ class _DetailspageState extends State<Detailspage> {
                   text: 'Manage your details:',
                   color: AppColors.labelGrey,
                 ),
-                SS32(),
+                SS24(),
                 MAccordion(
                   label: 'Personal details',
                   children: [
@@ -160,15 +205,29 @@ class _DetailspageState extends State<Detailspage> {
                           //bottom spacing
                           SS40(),
 
-                          DGPrimaryButton(
-                            onTap: () {},
-                            buttonText: 'My details have not changed',
-                          ),
+                          eKYCamendment
+                              ? Column(
+                                children: [
+                                  DGPrimaryButton(
+                                    onTap: () {
+                                      setState(() {
+                                        personalDetailsChanged = false;
+                                      });
+                                    },
+                                    buttonText: 'My details have not changed',
+                                  ),
 
-                          SS16(),
+                                  SS16(),
+                                ],
+                              )
+                              : NullBox(),
 
                           DGPrimaryButton(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                personalDetailsChanged = true;
+                              });
+                            },
                             buttonText: 'Update my details',
                           ),
 
@@ -261,15 +320,24 @@ class _DetailspageState extends State<Detailspage> {
 
                           SS40(),
 
-                          DGPrimaryButton(
-                            onTap: () {},
-                            buttonText: 'My details have not changed',
-                          ),
+                          eKYCamendment
+                              ? Column(
+                                children: [
+                                  DGPrimaryButton(
+                                    onTap: () {},
+                                    buttonText: 'My details have not changed',
+                                  ),
+                                  SS16(),
+                                ],
+                              )
+                              : NullBox(),
 
-                          SS16(),
-
                           DGPrimaryButton(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                addressDetailsChanged = true;
+                              });
+                            },
                             buttonText: 'Update my details',
                           ),
 
@@ -281,6 +349,492 @@ class _DetailspageState extends State<Detailspage> {
                 ),
 
                 //contact details
+                MAccordion(
+                  label: 'Contact details',
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            child: BodyRegular14(
+                              text:
+                                  'We can easily keep you updated through our digital channels just make sure we have your latest contact details',
+                              color: AppColors.labelGrey,
+                            ),
+                          ),
+                          SS24(),
+                          //mobile number
+                          ContactNumberField(
+                            codeFieldWidth: 108,
+                            numberFieldWidth: 188,
+                            labelText: 'Phone Number',
+                            onChanged: (value) {
+                              print('Full number: $value');
+                            },
+                          ),
+
+                          SS16(),
+                          CustomTextField(
+                            labelText: 'Email address',
+                            controller: _email,
+                            containerWidth: 298,
+                          ),
+
+                          SS16(),
+                          CustomDropdown(
+                            items: ['Email', 'Whatsapp', 'SMS'],
+                            onChanged: (value) {},
+                            labelText: 'Preferred channel of communication',
+                            containerWidth: 298,
+                            hintText: 'Email',
+                          ),
+
+                          SS16(),
+                          CustomDropdown(
+                            items: ['English', 'French'],
+                            onChanged: (value) {},
+                            labelText: 'Preferred language of communication',
+                            containerWidth: 298,
+                            hintText: 'English',
+                          ),
+
+                          SS40(),
+
+                          eKYCamendment
+                              ? Column(
+                                children: [
+                                  DGPrimaryButton(
+                                    onTap: () {},
+                                    buttonText: 'My details have not changed',
+                                  ),
+                                  SS16(),
+                                ],
+                              )
+                              : NullBox(),
+
+                          DGPrimaryButton(
+                            onTap: () {
+                              setState(() {
+                                contactDetailsChanged = true;
+                              });
+                            },
+                            buttonText: 'Update my details',
+                          ),
+
+                          SS40(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                //education and empolyment
+                MAccordion(
+                  label: 'Education and employment details',
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            child: BodyRegular14(
+                              text:
+                                  'With the most up to date understanding of your education and employment, we can personalise your banking experience to suit your needs.',
+                              color: AppColors.labelGrey,
+                            ),
+                          ),
+                          SS24(),
+                          CustomDropdown(
+                            items: [
+                              'Illiterate',
+                              'Primary Education',
+                              'Secondary / High School',
+                              'Certificate Qualification',
+                              'Diploma',
+                              'University / Bachelor\'s Degree',
+                              'Master\'s Degree',
+                              'Doctorate / PhD',
+                            ],
+                            onChanged: (value) {},
+                            labelText: 'Education level',
+                            containerWidth: 298,
+                            hintText: 'University / Bachelor\'s Degree',
+                          ),
+
+                          //employment type and the conditions:
+                          SS16(),
+                          //employer position
+                          CustomDropdown(
+                            items: ['Self employed', 'Employed', 'Unemployed'],
+                            onChanged: (value) {
+                              if (value == 'Self employed') {
+                                setState(() {
+                                  emplyedType = 'free';
+                                });
+                              } else if (value == 'Employed') {
+                                setState(() {
+                                  emplyedType = 'matrix';
+                                });
+                              } else {
+                                setState(() {
+                                  emplyedType = 'eish';
+                                });
+                              }
+                            },
+
+                            labelText: 'Employment type',
+                            containerWidth: 298,
+                            hintText: 'Employed',
+                          ),
+
+                          //employers name
+                          (emplyedType! == 'matrix')
+                              ? Column(
+                                children: [
+                                  SS16(),
+
+                                  CustomDropdown(
+                                    items: [
+                                      'IBL Ltd',
+                                      'CIEL Group',
+                                      'ENL Limited',
+                                      'Eclosia Group',
+                                      'Vivo Energy Mauritius',
+                                      'The Leal Group',
+                                      'Engen Petroleum (Mauritius) Ltd',
+                                      'New Mauritius Hotels Ltd',
+                                      'Mauritius Commercial Bank (MCB)',
+                                    ],
+                                    onChanged: (value) {},
+                                    labelText: 'Employer',
+                                    containerWidth: 298,
+                                    hintText: 'Mauritius Commercial Bank (MCB)',
+                                  ),
+                                  SS16(),
+                                  //employer position
+                                  CustomDropdown(
+                                    items: [
+                                      'Software Developer',
+                                      'Accountant'
+                                          'Project Manager',
+                                      'Financial Analyst',
+                                      'Customer Service Representative',
+                                      'Marketing Executive',
+                                      'Human Resources Officer',
+                                      'Sales Consultant',
+                                      'Operations Manager',
+                                      'Data Analyst',
+                                      'Administrative Assistant',
+                                      'Other',
+                                    ],
+                                    onChanged: (value) {},
+                                    labelText: 'Job title',
+                                    containerWidth: 298,
+                                    hintText: 'Accountant',
+                                  ),
+
+                                  //employed since
+                                  SS16(),
+                                  CustomDatePickerField(
+                                    labelText: 'Employed since date',
+                                    containerWidth: 298,
+                                  ),
+                                ],
+                              )
+                              : NullBox(),
+
+                          //the column for self employed
+                          (emplyedType! == 'free')
+                              ? Column(
+                                children: [
+                                  SS16(),
+                                  //business activity
+                                  CustomDropdown(
+                                    items: [
+                                      'Financial Services',
+                                      'Information Technology',
+                                      'Manufacturing',
+                                      'Hospitality and Tourism',
+                                      'Retail and Wholesale Trade',
+                                      'Other',
+                                    ],
+                                    onChanged: (value) {},
+                                    labelText: 'Business activity',
+                                    containerWidth: 298,
+                                    hintText: 'Financial Services',
+                                  ),
+                                  SS16(),
+
+                                  //BRN number
+                                  CustomerNumberField(
+                                    labelText: 'BR number',
+                                    fieldWidth: 298,
+                                    controller: _customerNumberController,
+                                    onChanged: (value) {
+                                      // handle change
+                                    },
+                                  ),
+                                ],
+                              )
+                              : NullBox(),
+
+                          //the column for  unemployed
+                          (emplyedType! == 'eish')
+                              ? Column(
+                                children: [
+                                  SS16(),
+                                  //business activity
+                                  CustomDropdown(
+                                    items: [
+                                      'Student',
+                                      'Housewife',
+                                      'Househusband',
+                                      'Retired',
+
+                                      'Other',
+                                    ],
+                                    onChanged: (value) {},
+                                    labelText: 'Unemployment type',
+                                    containerWidth: 298,
+                                    hintText: 'Please select an option',
+                                  ),
+                                  SS16(),
+
+                                  //BRN number
+                                  CustomerNumberField(
+                                    labelText: 'BR number',
+                                    fieldWidth: 298,
+                                    controller: _customerNumberController,
+                                    onChanged: (value) {
+                                      // handle change
+                                    },
+                                  ),
+                                ],
+                              )
+                              : NullBox(),
+
+                          // the buttons
+                          SS40(),
+
+                          eKYCamendment
+                              ? Column(
+                                children: [
+                                  DGPrimaryButton(
+                                    onTap: () {},
+                                    buttonText: 'My details have not changed',
+                                  ),
+                                  SS16(),
+                                ],
+                              )
+                              : NullBox(),
+
+                          DGPrimaryButton(
+                            onTap: () {
+                              setState(() {
+                                educationDetailsChanged = true;
+                              });
+                            },
+                            buttonText: 'Update my details',
+                          ),
+
+                          SS40(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                //the financial details
+                MAccordion(
+                  label: 'Finance details',
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            child: BodyRegular14(
+                              text:
+                                  'Keep your financial details up to date so we can match you with the best products and services.',
+                              color: AppColors.labelGrey,
+                            ),
+                          ),
+                          SS24(),
+
+                          CurrencyAmountField(
+                            labelText: 'Monthly income',
+                            onChanged: (currency, amount) {
+                              print('Selected: $currency, Amount: $amount');
+                            },
+                            currencyFieldWidth: 110,
+                            amountFieldWidth: 182,
+                          ),
+
+                          SS16(),
+
+                          //the multi-select
+                          MultiSelectDropdown(
+                            items: [
+                              'Pension',
+                              'Investments',
+                              'Rentals',
+                              'Inheritance',
+                              'Divorce Settlement',
+                            ],
+                            selectedValues: selectedList,
+                            onChanged: (newList) {
+                              setState(() => selectedList = newList);
+                            },
+                            labelText: 'Source of wealth',
+                            containerWidth: 298,
+                          ),
+                          SS16(),
+
+                          ///
+                          CustomerNumberField(
+                            labelText: 'Tax number',
+                            controller: _taxNumber,
+                            fieldWidth: 298,
+                          ),
+
+                          SS16(),
+
+                          FlagDropdown(
+                            onChanged: (value) {},
+                            labelText: 'Tax country',
+                          ),
+
+                          //bottom spacing
+                          SS40(),
+
+                          eKYCamendment
+                              ? Column(
+                                children: [
+                                  DGPrimaryButton(
+                                    onTap: () {},
+                                    buttonText: 'My details have not changed',
+                                  ),
+                                  SS16(),
+                                ],
+                              )
+                              : NullBox(),
+
+                          DGPrimaryButton(
+                            onTap: () {
+                              setState(() {
+                                financeDetailsChanged = true;
+                              });
+                            },
+                            buttonText: 'Update my details',
+                          ),
+
+                          SS40(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                //consents
+                MAccordion(
+                  label: 'Consents',
+                  children: [
+                    YesNoRadioRow(
+                      containerWidth: 298,
+                      labelText: 'Marketing consent',
+                      descriptionText:
+                          'Want the latest updates, offers, and tips? Tick the box to stay in the loop.',
+                      selectedValue: marketConsent,
+                      onChanged: (value) {
+                        setState(() {
+                          marketConsent = value;
+                        });
+                      },
+                    ),
+
+                    SS24(),
+                    YesNoRadioRow(
+                      containerWidth: 298,
+                      labelText: 'CKYC consent',
+                      descriptionText:
+                          'For address verification through CKYC (government service), please give your consent by ticking the box below.',
+                      selectedValue: consentCKYC,
+                      onChanged: (value) {
+                        setState(() {
+                          consentCKYC = value;
+                        });
+                      },
+                    ),
+
+                    //bottom spacing
+                    SS40(),
+
+                    eKYCamendment
+                        ? Column(
+                          children: [
+                            DGPrimaryButton(
+                              onTap: () {},
+                              buttonText: 'My details have not changed',
+                            ),
+
+                            SS16(),
+                          ],
+                        )
+                        : NullBox(),
+
+                    DGPrimaryButton(
+                      onTap: () {
+                        setState(() {
+                          consentsDetailsChanged = true;
+                        });
+                      },
+                      buttonText: 'Update my details',
+                    ),
+
+                    SS40(),
+                  ],
+                ),
+
+                //the final buttons
+                SS40(),
+                MPrimaryButton(
+                  onTap: () {
+                    if (personalDetailsChanged) {
+                      // Navigate to LivelinessTest if personalDetailsChanged is true
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ConsentScreen(),
+                        ),
+                      );
+                    } else if (addressDetailsChanged) {
+                      // Navigate to addressDetails page if addressDetailsChanged is true
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AddressPage()),
+                      );
+                    } else if (contactDetailsChanged) {
+                      // Navigate to OTP page if contactDetailsChanged is true
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => OTPPage()),
+                      );
+                    } else {
+                      // If none of the above are true, navigate to OTP page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => OTPPage()),
+                      );
+                    }
+                  },
+                  buttonText: 'Next',
+                ),
+                SS24(),
+
+                DGOutlinedButton(onTap: () {}, buttonText: 'Cancel'),
+
+                SS24(),
               ],
             ),
           ),

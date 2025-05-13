@@ -81,3 +81,46 @@ class LinkBackButton extends StatelessWidget {
     );
   }
 }
+
+class DGOutlinedButton extends StatelessWidget {
+  final VoidCallback onTap;
+  final String buttonText;
+
+  DGOutlinedButton({required this.onTap, required this.buttonText});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 20.0, left: 20),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          clipBehavior: Clip.antiAlias,
+          decoration: ShapeDecoration(
+            color: Colors.white, // White fill
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: AppColors.labelGrey), // Grey border
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                buttonText,
+                style: TextStyle(
+                  color: Colors.black, // Black text color
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
