@@ -2,6 +2,10 @@ import 'package:ekyc_prototypes/pages/address.dart';
 import 'package:flutter/material.dart';
 
 class ProgressScreen extends StatelessWidget {
+  final bool emailChanged;
+  final bool mobileChanged;
+
+  ProgressScreen({required this.emailChanged, required this.mobileChanged});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +22,13 @@ class ProgressScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddressPage()),
+                  MaterialPageRoute(
+                    builder:
+                        (context) => AddressPage(
+                          emailChanged: emailChanged,
+                          mobileChanged: mobileChanged,
+                        ),
+                  ),
                 );
               },
               child: Text('Next'),

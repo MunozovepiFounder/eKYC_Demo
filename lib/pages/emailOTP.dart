@@ -1,30 +1,30 @@
-import 'dart:async';
-
 import 'package:ekyc_prototypes/components/buttons.dart';
 import 'package:ekyc_prototypes/components/colors.dart';
 import 'package:ekyc_prototypes/components/fonts.dart';
 import 'package:ekyc_prototypes/components/layout.dart';
 import 'package:ekyc_prototypes/components/status.dart';
 import 'package:ekyc_prototypes/option1/detailsPage.dart';
+import 'package:ekyc_prototypes/pages/otp.dart';
 import 'package:flutter/material.dart';
 
-class DefaultOTPPage extends StatefulWidget {
+import 'dart:async';
+import 'package:flutter/material.dart';
+
+class EmailOTPPage extends StatefulWidget {
   final bool emailChanged;
   final bool mobileChanged;
   final bool addressChanged;
 
-  DefaultOTPPage({
+  EmailOTPPage({
     required this.emailChanged,
     required this.mobileChanged,
-
     required this.addressChanged,
   });
-
   @override
-  State<DefaultOTPPage> createState() => _DefaultOTPPageState();
+  _EmailOTPPageState createState() => _EmailOTPPageState();
 }
 
-class _DefaultOTPPageState extends State<DefaultOTPPage> {
+class _EmailOTPPageState extends State<EmailOTPPage> {
   late List<FocusNode> _focusNodes;
   late List<TextEditingController> _controllers;
   int _secondsRemaining = 90;
@@ -85,19 +85,18 @@ class _DefaultOTPPageState extends State<DefaultOTPPage> {
 
                 SS32(),
                 Image.asset(
-                  'assets/verify/mobile.png',
+                  'assets/verify/email.png',
                   width: 100, // optional
                   height: 100, // optional
                   fit: BoxFit.contain, // optional
                 ),
 
                 SS24(),
-
-                Heading03(text: 'We sent you something'),
+                Heading03(text: 'You have got mail'),
                 SS16(),
                 BodyBold14(
                   text:
-                      'Please enter the 5-digit code sent the mobile number you provided.',
+                      'Please enter the 5-digit code sent the email address you provided.',
                   color: AppColors.labelGrey,
                 ),
 
@@ -109,6 +108,7 @@ class _DefaultOTPPageState extends State<DefaultOTPPage> {
                 SS24(),
                 Container(
                   width: 298,
+                  //color: Colors.amber,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(5, (index) {
@@ -171,15 +171,28 @@ class _DefaultOTPPageState extends State<DefaultOTPPage> {
                       MPrimaryButton(
                         onTap: () {
                           if (otpValid) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => Detailspage(
-                                      addressChanged: widget.addressChanged,
-                                      newStatus: true,
-                                    ),
-                              ),
-                            );
+                            if (widget.mobileChanged) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => DefaultOTPPage(
+                                        addressChanged: widget.addressChanged,
+                                        emailChanged: widget.emailChanged,
+                                        mobileChanged: widget.mobileChanged,
+                                      ),
+                                ),
+                              );
+                            } else {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => Detailspage(
+                                        newStatus: true,
+                                        addressChanged: widget.addressChanged,
+                                      ),
+                                ),
+                              );
+                            }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(

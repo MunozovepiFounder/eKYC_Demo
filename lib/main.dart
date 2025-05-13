@@ -1,8 +1,12 @@
+import 'package:ekyc_prototypes/components/colors.dart';
 import 'package:ekyc_prototypes/components/header.dart';
 import 'package:ekyc_prototypes/components/layout.dart';
 import 'package:ekyc_prototypes/components/status.dart';
 import 'package:ekyc_prototypes/option1/detailsPage.dart';
 import 'package:ekyc_prototypes/option1/landing.dart';
+import 'package:ekyc_prototypes/pages/address.dart';
+import 'package:ekyc_prototypes/pages/consent.dart';
+import 'package:ekyc_prototypes/pages/emailOTP.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -19,9 +23,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryRed),
       ),
-      home: Detailspage(), //change back to the landing
+      home: Option1Landing(), //change back to the landing
     );
   }
 }

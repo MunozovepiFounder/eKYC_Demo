@@ -153,12 +153,6 @@ class CustomerProfileStepper extends StatelessWidget {
                       circleText: '3',
                       labelText: 'Verification',
                     ),
-                    LineInStepper(),
-                    CustomStepper(
-                      status: step4Status,
-                      circleText: '4',
-                      labelText: 'Submission',
-                    ),
                   ],
                 ),
               ],

@@ -1,9 +1,23 @@
 import 'package:camera/camera.dart';
+import 'package:ekyc_prototypes/components/buttons.dart';
+import 'package:ekyc_prototypes/components/fonts.dart';
+import 'package:ekyc_prototypes/components/layout.dart';
+import 'package:ekyc_prototypes/components/status.dart';
+import 'package:ekyc_prototypes/pages/address.dart';
 import 'package:flutter/material.dart';
 
 class CameraPreviewScreen extends StatefulWidget {
   final String step;
-  CameraPreviewScreen({required this.step});
+  final bool addressChanged;
+  final bool emailChanged;
+  final bool mobileChanged;
+
+  CameraPreviewScreen({
+    required this.step,
+    required this.addressChanged,
+    required this.emailChanged,
+    required this.mobileChanged,
+  });
 
   @override
   _CameraPreviewScreenState createState() => _CameraPreviewScreenState();
@@ -39,6 +53,10 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
     setState(() {
       _isImageCaptured = true;
     });
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Image captured successfully!')));
   }
 
   void _onNext() {
@@ -47,14 +65,38 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CameraPreviewScreen(step: 'nicFront'),
+            builder:
+                (context) => CameraPreviewScreen(
+                  step: 'nicFront',
+                  addressChanged: widget.addressChanged,
+                  emailChanged: widget.emailChanged,
+                  mobileChanged: widget.mobileChanged,
+                ),
           ),
         );
       } else if (widget.step == 'nicFront') {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CameraPreviewScreen(step: 'nicBack'),
+            builder:
+                (context) => CameraPreviewScreen(
+                  step: 'nicBack',
+                  addressChanged: widget.addressChanged,
+                  emailChanged: widget.emailChanged,
+                  mobileChanged: widget.mobileChanged,
+                ),
+          ),
+        );
+      } else if (widget.step == 'nicBack') {
+        // Redirect to Address Page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => AddressPage(
+                  emailChanged: widget.emailChanged,
+                  mobileChanged: widget.mobileChanged,
+                ),
           ),
         );
       }
@@ -68,39 +110,67 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Liveliness Test - ${widget.step == 'selfie'
-              ? 'Selfie'
-              : widget.step == 'nicFront'
-              ? 'NIC Front'
-              : 'NIC Back'}',
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Please take your ${widget.step == 'selfie'
-                  ? 'selfie'
-                  : widget.step == 'nicFront'
-                  ? 'NIC Front'
-                  : 'NIC Back'} image:',
+      backgroundColor: Colors.white,
+      //   appBar: AppBar(
+      //   title: Text(
+      //     'Liveliness Test - ${widget.step == 'selfie'
+      //        ? 'Selfie'
+      //        : widget.step == 'nicFront'
+      //       ? 'NIC Front'
+      //       : 'NIC Back'}',
+      //   ),
+      //  ),
+      body: SingleChildScrollView(
+        child: ResponsiveContainer(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomerProfileStepper(
+                  backButton: false,
+                  step1Status: 'completed',
+                  step2Status: 'completed',
+                  step3Status: 'active',
+                  step4Status: 'inactive',
+                  activeLabel: 'Verification',
+                ),
+
+                SS32(),
+                Heading03(
+                  text:
+                      'Please take your ${widget.step == 'selfie'
+                          ? 'selfie'
+                          : widget.step == 'nicFront'
+                          ? 'NIC Front'
+                          : 'NIC Back'} image:',
+                  color: Colors.black,
+                ),
+                SizedBox(height: 20),
+                _isCameraInitialized
+                    ? CameraPreview(_cameraController)
+                    : Center(child: CircularProgressIndicator()),
+                SS40(),
+
+                Container(
+                  width: 298,
+                  child: Column(
+                    children: [
+                      DGOutlinedButton(
+                        onTap: _captureImage,
+                        buttonText: 'Capture',
+                      ),
+                      SS24(),
+                      MPrimaryButton(onTap: _onNext, buttonText: 'Next'),
+
+                      //DGOutlinedButton(onTap: () {}, buttonText: 'Cancel'),
+                      SS24(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            _isCameraInitialized
-                ? CameraPreview(_cameraController)
-                : Center(child: CircularProgressIndicator()),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _captureImage,
-              child: Text('Capture Image'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(onPressed: _onNext, child: Text('Next')),
-          ],
+          ),
         ),
       ),
     );

@@ -1,9 +1,12 @@
+import 'dart:html' as html; // Only for Flutter Web
+import 'package:camera/camera.dart';
 import 'package:ekyc_prototypes/components/colors.dart';
 import 'package:ekyc_prototypes/components/fonts.dart';
 import 'package:ekyc_prototypes/components/layout.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class CustomDropdown extends StatelessWidget {
@@ -125,8 +128,10 @@ class YesNoRadioRow extends StatelessWidget {
 }
 
 //the upload component
-class UploadBox extends StatelessWidget {
-  final void Function(PlatformFile file) onFilePicked;
+
+class UploadBox extends StatefulWidget {
+  final void Function(PlatformFile file)? onFilePicked;
+  final void Function(XFile image)? onImageCaptured;
   final IconData icon;
   final String label;
   final double containerWidth;
@@ -134,60 +139,161 @@ class UploadBox extends StatelessWidget {
 
   const UploadBox({
     Key? key,
-    required this.onFilePicked,
+    this.onFilePicked,
+    this.onImageCaptured,
     this.icon = Icons.upload_file,
-    this.label = 'Upload PDF or PNG',
+    this.label = 'Upload PDF, PNG or Take a Photo',
     required this.containerWidth,
     required this.labelText,
   }) : super(key: key);
 
+  @override
+  _UploadBoxState createState() => _UploadBoxState();
+}
+
+class _UploadBoxState extends State<UploadBox> {
+  PlatformFile? _uploadedFile;
+  XFile? _capturedImage;
+
+  void _clearFile() {
+    setState(() {
+      _uploadedFile = null;
+      _capturedImage = null;
+    });
+  }
+
   Future<void> _pickFile(BuildContext context) async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'png'],
+      allowedExtensions: ['pdf', 'png', 'jpg', 'jpeg'],
     );
 
     if (result != null && result.files.isNotEmpty) {
-      onFilePicked(result.files.first);
+      setState(() {
+        _uploadedFile = result.files.first;
+        _capturedImage = null; // Clear image if any
+      });
+      widget.onFilePicked?.call(result.files.first);
     } else {
-      // User canceled the picker
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('No file selected.')));
     }
   }
 
+  Future<void> _capturePhoto(BuildContext context) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.camera,
+      preferredCameraDevice: CameraDevice.front,
+    );
+
+    if (image != null) {
+      setState(() {
+        _capturedImage = image;
+        _uploadedFile = null; // Clear file if any
+      });
+      widget.onImageCaptured?.call(image);
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('No image captured.')));
+    }
+  }
+
+  Widget _buildPreview() {
+    if (_uploadedFile != null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Selected: ${_uploadedFile!.name}',
+            style: TextStyle(color: Colors.black),
+          ),
+          TextButton.icon(
+            onPressed: _clearFile,
+            icon: Icon(Icons.delete, color: Colors.red),
+            label: Text('Remove', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      );
+    }
+
+    if (_capturedImage != null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.network(_capturedImage!.path, height: 100, fit: BoxFit.cover),
+          TextButton.icon(
+            onPressed: _clearFile,
+            icon: Icon(Icons.delete, color: Colors.red),
+            label: Text('Remove', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      );
+    }
+
+    return SizedBox.shrink();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _pickFile(context),
-      child: Container(
-        width: containerWidth,
-
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            BodyRegular14(text: labelText, color: AppColors.labelGrey),
-            SS8(),
-            Container(
-              width: containerWidth,
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, size: 24, color: AppColors.labelGrey),
-                  const SizedBox(width: 8),
-                  Text(label, style: TextStyle(fontSize: 16)),
-                ],
-              ),
+    return Container(
+      width: widget.containerWidth,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          BodyBold14(text: widget.labelText, color: AppColors.labelGrey),
+          SS8(),
+          Container(
+            width: widget.containerWidth,
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.darkGrey),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
             ),
-          ],
-        ),
+            child: Column(
+              children: [
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    side: BorderSide(color: Colors.grey),
+                    elevation: 0,
+                  ),
+                  onPressed:
+                      _uploadedFile == null && _capturedImage == null
+                          ? () => _pickFile(context)
+                          : null,
+                  icon: Icon(Icons.upload_file, color: AppColors.labelGrey),
+                  label: BodyBold14(
+                    text: 'Upload File',
+                    color: AppColors.labelGrey,
+                  ),
+                ),
+                SS16(),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    side: BorderSide(color: Colors.grey),
+                    elevation: 0,
+                  ),
+                  onPressed:
+                      _uploadedFile == null && _capturedImage == null
+                          ? () => _capturePhoto(context)
+                          : null,
+                  icon: Icon(Icons.camera_alt, color: AppColors.labelGrey),
+                  label: BodyBold14(
+                    text: 'Take Photo',
+                    color: AppColors.labelGrey,
+                  ),
+                ),
+                SS16(),
+                _buildPreview(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

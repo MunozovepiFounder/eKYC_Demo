@@ -143,7 +143,7 @@ class BulletPoints extends StatelessWidget {
           ),
           SizedBox(width: 8),
           Container(
-            width: 244,
+            width: 280,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,

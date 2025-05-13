@@ -1,3 +1,4 @@
+import 'package:ekyc_prototypes/components/alerts.dart';
 import 'package:ekyc_prototypes/components/buttons.dart';
 import 'package:ekyc_prototypes/components/colors.dart';
 import 'package:ekyc_prototypes/components/fonts.dart';
@@ -9,9 +10,13 @@ import 'package:ekyc_prototypes/pages/consent.dart';
 import 'package:ekyc_prototypes/pages/liveliness.dart';
 import 'package:ekyc_prototypes/pages/otp.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Detailspage extends StatefulWidget {
-  const Detailspage({super.key});
+  final bool addressChanged;
+  final bool newStatus;
+
+  Detailspage({required this.addressChanged, required this.newStatus});
 
   @override
   State<Detailspage> createState() => _DetailspageState();
@@ -75,6 +80,10 @@ class _DetailspageState extends State<Detailspage> {
 
   //the triggers
   bool eKYCamendment = false; //option 1
+  bool emailChanged = false;
+  bool mobileChanged = false;
+
+  String formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
 
   @override
   void dispose() {
@@ -97,12 +106,53 @@ class _DetailspageState extends State<Detailspage> {
                 CustomerProfileStepper(
                   backButton: true,
                   step1Status: 'completed',
-                  step2Status: 'active',
-                  step3Status: 'inactive',
+                  step2Status: widget.newStatus ? 'completed' : 'active',
+                  step3Status: widget.newStatus ? 'completed' : 'inactive',
                   step4Status: 'inactive',
-                  activeLabel: 'Get started',
+                  activeLabel:
+                      widget.newStatus
+                          ? widget.addressChanged
+                              ? 'Profile under review'
+                              : 'Profile updated'
+                          : 'Update details',
                 ),
                 SS40(),
+
+                //the conditions
+                widget.newStatus
+                    ? widget.addressChanged
+                        ? Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            PendingBox(
+                              alertHeading: 'Verification required',
+                              alertText:
+                                  'You will be informed when to visit your nearest branch to verify your proof of address',
+                            ),
+
+                            SS32(),
+                          ],
+                        )
+                        : Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SuccessBox(
+                              alertHeading: 'Successful profile update',
+                              alertText:
+                                  'Your profile has been successfully updated',
+                            ),
+                            SS16(),
+                            BodyBold14(
+                              text: 'Profile last updated $formattedDate ',
+                              color: AppColors.primaryRed,
+                            ),
+                            SS32(),
+                          ],
+                        )
+                    : NullBox(),
+
                 BodyBold16(
                   text: 'Manage your details:',
                   color: AppColors.labelGrey,
@@ -371,6 +421,9 @@ class _DetailspageState extends State<Detailspage> {
                             labelText: 'Phone Number',
                             onChanged: (value) {
                               print('Full number: $value');
+                              setState(() {
+                                mobileChanged = true;
+                              });
                             },
                           ),
 
@@ -379,6 +432,11 @@ class _DetailspageState extends State<Detailspage> {
                             labelText: 'Email address',
                             controller: _email,
                             containerWidth: 298,
+                            onChanged: (value) {
+                              setState(() {
+                                emailChanged = true;
+                              });
+                            },
                           ),
 
                           SS16(),
@@ -805,26 +863,51 @@ class _DetailspageState extends State<Detailspage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ConsentScreen(),
+                          builder:
+                              (context) => ConsentScreen(
+                                addressChanged: addressDetailsChanged,
+                                emailChanged: emailChanged,
+                                mobileChanged: mobileChanged,
+                              ),
                         ),
                       );
                     } else if (addressDetailsChanged) {
                       // Navigate to addressDetails page if addressDetailsChanged is true
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AddressPage()),
+                        MaterialPageRoute(
+                          builder:
+                              (context) => AddressPage(
+                                emailChanged: emailChanged,
+                                mobileChanged: mobileChanged,
+                              ),
+                        ),
                       );
                     } else if (contactDetailsChanged) {
                       // Navigate to OTP page if contactDetailsChanged is true
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => OTPPage()),
+                        MaterialPageRoute(
+                          builder:
+                              (context) => DefaultOTPPage(
+                                addressChanged: addressDetailsChanged,
+                                emailChanged: emailChanged,
+                                mobileChanged: mobileChanged,
+                              ),
+                        ),
                       );
                     } else {
                       // If none of the above are true, navigate to OTP page
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => OTPPage()),
+                        MaterialPageRoute(
+                          builder:
+                              (context) => DefaultOTPPage(
+                                addressChanged: addressDetailsChanged,
+                                emailChanged: emailChanged,
+                                mobileChanged: mobileChanged,
+                              ),
+                        ),
                       );
                     }
                   },

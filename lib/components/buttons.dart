@@ -73,10 +73,30 @@ class DGPrimaryButton extends StatelessWidget {
 class LinkBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Row(
+        children: [
+          Icon(Icons.arrow_back, size: 14, color: AppColors.labelGrey),
+          BodyBold14(text: 'Back', color: AppColors.statusBlue),
+        ],
+      ),
+    );
+  }
+}
+
+class LinkButton extends StatelessWidget {
+  final String text;
+
+  LinkButton({required this.text});
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.arrow_back, size: 14, color: AppColors.labelGrey),
-        BodyBold14(text: 'Back', color: AppColors.statusBlue),
+        //   Icon(Icons.arrow_back, size: 14, color: AppColors.labelGrey),
+        BodyBold12(text: text, color: AppColors.statusBlue),
       ],
     );
   }

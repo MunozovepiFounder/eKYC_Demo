@@ -39,6 +39,7 @@ dependencies:
   intl: ^0.20.2
   camera: ^0.9.4+5
   permission_handler: ^10.2.0
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -75,6 +76,14 @@ flutter:
      - assets/flags/US.png
      - assets/flags/ZA.png
      - assets/flags/MU.png
+
+     - assets/verify/email.png
+     - assets/verify/IDP.png
+     - assets/verify/mobile.png
+
+     - assets/icons/pending.png
+     - assets/icons/succ.png
+     - assets/icons/tough.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
