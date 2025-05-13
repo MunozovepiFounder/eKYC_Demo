@@ -5,6 +5,7 @@ import 'package:ekyc_prototypes/components/fonts.dart';
 import 'package:ekyc_prototypes/components/input.dart';
 import 'package:ekyc_prototypes/components/layout.dart';
 import 'package:ekyc_prototypes/components/status.dart';
+import 'package:ekyc_prototypes/option1/landing.dart';
 import 'package:ekyc_prototypes/pages/address.dart';
 import 'package:ekyc_prototypes/pages/consent.dart';
 import 'package:ekyc_prototypes/pages/liveliness.dart';
@@ -128,7 +129,7 @@ class _DetailspageState extends State<Detailspage> {
                             PendingBox(
                               alertHeading: 'Verification required',
                               alertText:
-                                  'You will be informed when to visit your nearest branch to verify your proof of address',
+                                  'You will be informed when to visit your nearest branch to verify your proof of address.',
                             ),
 
                             SS32(),
@@ -858,7 +859,18 @@ class _DetailspageState extends State<Detailspage> {
                 SS40(),
                 MPrimaryButton(
                   onTap: () {
-                    if (personalDetailsChanged) {
+                    if (!personalDetailsChanged &&
+                        !contactDetailsChanged &&
+                        !addressDetailsChanged &&
+                        !educationDetailsChanged &&
+                        !financeDetailsChanged &&
+                        !consentsDetailsChanged) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('No changes made, you cannot proceed'),
+                        ),
+                      );
+                    } else if (personalDetailsChanged) {
                       // Navigate to LivelinessTest if personalDetailsChanged is true
                       Navigator.push(
                         context,
@@ -897,7 +909,7 @@ class _DetailspageState extends State<Detailspage> {
                         ),
                       );
                     } else {
-                      // If none of the above are true, navigate to OTP page
+                      // Default fallback if any other change triggers
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -915,7 +927,14 @@ class _DetailspageState extends State<Detailspage> {
                 ),
                 SS24(),
 
-                DGOutlinedButton(onTap: () {}, buttonText: 'Cancel'),
+                DGOutlinedButton(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => Option1Landing()),
+                    );
+                  },
+                  buttonText: 'Cancel',
+                ),
 
                 SS24(),
               ],
