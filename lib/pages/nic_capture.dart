@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 class ProgressScreen extends StatelessWidget {
   final bool emailChanged;
   final bool mobileChanged;
+  String? preferredBranch;
 
-  ProgressScreen({required this.emailChanged, required this.mobileChanged});
+  ProgressScreen({
+    required this.emailChanged,
+    required this.mobileChanged,
+    required this.preferredBranch,
+  });
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +30,7 @@ class ProgressScreen extends StatelessWidget {
                   MaterialPageRoute(
                     builder:
                         (context) => AddressPage(
+                          preferredBranch: preferredBranch,
                           emailChanged: emailChanged,
                           mobileChanged: mobileChanged,
                         ),

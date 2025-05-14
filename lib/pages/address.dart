@@ -3,14 +3,20 @@ import 'package:ekyc_prototypes/components/fonts.dart';
 import 'package:ekyc_prototypes/components/input.dart';
 import 'package:ekyc_prototypes/components/layout.dart';
 import 'package:ekyc_prototypes/components/status.dart';
+import 'package:ekyc_prototypes/option1/landing.dart';
 import 'package:ekyc_prototypes/pages/otp.dart';
 import 'package:flutter/material.dart';
 
 class AddressPage extends StatefulWidget {
   final bool emailChanged;
   final bool mobileChanged;
+  String? preferredBranch;
 
-  AddressPage({required this.emailChanged, required this.mobileChanged});
+  AddressPage({
+    required this.emailChanged,
+    required this.mobileChanged,
+    required this.preferredBranch,
+  });
   @override
   State<AddressPage> createState() => _AddressPageState();
 }
@@ -197,6 +203,7 @@ class _AddressPageState extends State<AddressPage> {
                               MaterialPageRoute(
                                 builder:
                                     (context) => DefaultOTPPage(
+                                      preferredBranch: widget.preferredBranch,
                                       addressChanged: true,
                                       emailChanged: widget.emailChanged,
                                       mobileChanged: widget.mobileChanged,
@@ -209,7 +216,16 @@ class _AddressPageState extends State<AddressPage> {
                       ),
                       SS24(),
 
-                      DGOutlinedButton(onTap: () {}, buttonText: 'Cancel'),
+                      DGOutlinedButton(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => Option1Landing(),
+                            ),
+                          );
+                        },
+                        buttonText: 'Cancel',
+                      ),
 
                       SS24(),
                     ],

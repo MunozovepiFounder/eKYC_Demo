@@ -13,12 +13,14 @@ class CameraPreviewScreen extends StatefulWidget {
   final bool addressChanged;
   final bool emailChanged;
   final bool mobileChanged;
+  String? preferredBranch;
 
   CameraPreviewScreen({
     required this.step,
     required this.addressChanged,
     required this.emailChanged,
     required this.mobileChanged,
+    required this.preferredBranch,
   });
 
   @override
@@ -92,6 +94,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
       MaterialPageRoute(
         builder:
             (context) => CameraPreviewScreen(
+              preferredBranch: widget.preferredBranch,
               step: nextStep,
               addressChanged: widget.addressChanged,
               emailChanged: widget.emailChanged,
@@ -108,6 +111,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
         MaterialPageRoute(
           builder:
               (context) => AddressPage(
+                preferredBranch: widget.preferredBranch,
                 emailChanged: widget.emailChanged,
                 mobileChanged: widget.mobileChanged,
               ),
@@ -119,6 +123,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
         MaterialPageRoute(
           builder:
               (context) => EmailOTPPage(
+                preferredBranch: widget.preferredBranch,
                 addressChanged: widget.addressChanged,
                 emailChanged: widget.emailChanged,
                 mobileChanged: widget.mobileChanged,
@@ -131,6 +136,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
         MaterialPageRoute(
           builder:
               (context) => DefaultOTPPage(
+                preferredBranch: widget.preferredBranch,
                 addressChanged: widget.addressChanged,
                 emailChanged: widget.emailChanged,
                 mobileChanged: widget.mobileChanged,

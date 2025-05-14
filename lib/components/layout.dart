@@ -185,13 +185,15 @@ class NullBox extends StatelessWidget {
 class MAccordion extends StatefulWidget {
   final String label;
   final List<Widget> children;
-  final bool danger; // optional parameter
+  final bool danger;
+  final bool isOpen;
 
   const MAccordion({
     super.key,
     required this.label,
     required this.children,
-    this.danger = false, // default is false
+    this.danger = false,
+    this.isOpen = false,
   });
 
   @override
@@ -199,7 +201,24 @@ class MAccordion extends StatefulWidget {
 }
 
 class _MAccordionState extends State<MAccordion> {
-  bool _isOpen = false;
+  late bool _isOpen;
+
+  @override
+  void initState() {
+    super.initState();
+    _isOpen = widget.isOpen;
+  }
+
+  @override
+  void didUpdateWidget(covariant MAccordion oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // When the parent updates isOpen, update internal state
+    if (oldWidget.isOpen != widget.isOpen) {
+      setState(() {
+        _isOpen = widget.isOpen;
+      });
+    }
+  }
 
   void _toggle() {
     setState(() {

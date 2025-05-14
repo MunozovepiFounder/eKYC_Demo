@@ -14,11 +14,13 @@ class EmailOTPPage extends StatefulWidget {
   final bool emailChanged;
   final bool mobileChanged;
   final bool addressChanged;
+  String? preferredBranch;
 
   EmailOTPPage({
     required this.emailChanged,
     required this.mobileChanged,
     required this.addressChanged,
+    required this.preferredBranch,
   });
   @override
   _EmailOTPPageState createState() => _EmailOTPPageState();
@@ -176,6 +178,7 @@ class _EmailOTPPageState extends State<EmailOTPPage> {
                                 MaterialPageRoute(
                                   builder:
                                       (context) => DefaultOTPPage(
+                                        preferredBranch: widget.preferredBranch,
                                         addressChanged: widget.addressChanged,
                                         emailChanged: widget.emailChanged,
                                         mobileChanged: widget.mobileChanged,
@@ -187,6 +190,7 @@ class _EmailOTPPageState extends State<EmailOTPPage> {
                                 MaterialPageRoute(
                                   builder:
                                       (context) => Detailspage(
+                                        preferredBranch: widget.preferredBranch,
                                         eKYCamendment: false,
                                         newStatus: true,
                                         addressChanged: widget.addressChanged,

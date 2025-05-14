@@ -1,6 +1,7 @@
 import 'package:ekyc_prototypes/components/buttons.dart';
 import 'package:ekyc_prototypes/components/layout.dart';
 import 'package:ekyc_prototypes/components/status.dart';
+import 'package:ekyc_prototypes/option1/landing.dart';
 import 'package:ekyc_prototypes/pages/liveliness.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -9,11 +10,13 @@ class ConsentScreen extends StatefulWidget {
   final bool addressChanged;
   final bool emailChanged;
   final bool mobileChanged;
+  String? preferredBranch;
 
   ConsentScreen({
     required this.addressChanged,
     required this.emailChanged,
     required this.mobileChanged,
+    required this.preferredBranch,
   });
 
   @override
@@ -34,6 +37,7 @@ class _ConsentScreenState extends State<ConsentScreen> {
                 addressChanged: widget.addressChanged,
                 emailChanged: widget.emailChanged,
                 mobileChanged: widget.mobileChanged,
+                preferredBranch: widget.preferredBranch,
               ),
         ),
       );
@@ -57,7 +61,7 @@ class _ConsentScreenState extends State<ConsentScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 CustomerProfileStepper(
-                  backButton: false,
+                  backButton: true,
                   step1Status: 'completed',
                   step2Status: 'completed',
                   step3Status: 'active',
@@ -101,7 +105,16 @@ class _ConsentScreenState extends State<ConsentScreen> {
                     children: [
                       MPrimaryButton(onTap: _onNext, buttonText: 'Start'),
                       SS24(),
-                      DGOutlinedButton(onTap: () {}, buttonText: 'Cancel'),
+                      DGOutlinedButton(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => Option1Landing(),
+                            ),
+                          );
+                        },
+                        buttonText: 'Cancel',
+                      ),
 
                       SS24(),
                     ],

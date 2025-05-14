@@ -17,11 +17,13 @@ class Detailspage extends StatefulWidget {
   final bool addressChanged;
   final bool newStatus;
   final bool eKYCamendment;
+  String? preferredBranch;
 
   Detailspage({
     required this.addressChanged,
     required this.newStatus,
     required this.eKYCamendment,
+    required this.preferredBranch,
   });
 
   @override
@@ -91,6 +93,32 @@ class _DetailspageState extends State<Detailspage> {
 
   String formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
 
+  int _openIndex = 0; // controls which accordion is open
+
+  bool personalDetailsOpen = true;
+  bool addressDetailsOpen = false;
+  bool contactDetailsOpen = false;
+  bool educationDetailsOpen = false;
+  bool financeDetailsOpen = false;
+  bool consentDetailsOpen = false;
+
+  void _handleToggle(int index) {
+    setState(() {
+      _openIndex = _openIndex == index ? -1 : index;
+    });
+  }
+
+  void _handleComplete(int index) {
+    setState(() {
+      // Close current and open next
+      if (index + 1 < 6) {
+        _openIndex = index + 1;
+      } else {
+        _openIndex = -1; // no more accordions to open
+      }
+    });
+  }
+
   @override
   void dispose() {
     // Dispose controller to prevent memory leaks
@@ -128,9 +156,9 @@ class _DetailspageState extends State<Detailspage> {
                     ? Column(
                       children: [
                         WarningBox(
-                          alertHeading: 'Profile review required',
+                          alertHeading: 'Easily manage your profile',
                           alertText:
-                              'To avoid any disruption to your banking services, please confirm or update the details highlighted in red.',
+                              'To successfully amend your profile, please confirm or update the details highlighted in red.',
                         ),
 
                         SS24(),
@@ -148,7 +176,7 @@ class _DetailspageState extends State<Detailspage> {
                             PendingBox(
                               alertHeading: 'Verification required',
                               alertText:
-                                  'You will be informed when to visit your nearest branch to verify your proof of address.',
+                                  'You will be informed when to visit your preferred branch, ${widget.preferredBranch} to verify your proof of address.',
                             ),
 
                             SS32(),
@@ -179,6 +207,7 @@ class _DetailspageState extends State<Detailspage> {
                 ),
                 SS24(),
                 MAccordion(
+                  isOpen: personalDetailsOpen,
                   danger:
                       !widget.eKYCamendment
                           ? false
@@ -207,7 +236,11 @@ class _DetailspageState extends State<Detailspage> {
                             children: [
                               CustomDropdown(
                                 items: ['Miss', 'Mrs', 'Mr', 'Dr', 'Honorable'],
-                                onChanged: (value) {},
+                                onChanged: (value) {
+                                  setState(() {
+                                    personalDetailsChanged = true;
+                                  });
+                                },
                                 hintText: 'Mrs',
                                 labelText: 'Title',
                                 containerWidth: 114,
@@ -217,6 +250,11 @@ class _DetailspageState extends State<Detailspage> {
                                 labelText: 'First name',
                                 controller: _firstName,
                                 containerWidth: 168,
+                                onChanged: (value) {
+                                  setState(() {
+                                    personalDetailsChanged = true;
+                                  });
+                                },
                               ),
                             ],
                           ),
@@ -227,6 +265,11 @@ class _DetailspageState extends State<Detailspage> {
                             labelText: 'Last name',
                             controller: _lasttName,
                             containerWidth: 298,
+                            onChanged: (value) {
+                              setState(() {
+                                personalDetailsChanged = true;
+                              });
+                            },
                           ),
 
                           SS16(),
@@ -234,6 +277,11 @@ class _DetailspageState extends State<Detailspage> {
                             labelText: 'Surname at birth (optional)',
                             controller: _madienName,
                             containerWidth: 298,
+                            onChanged: (value) {
+                              setState(() {
+                                personalDetailsChanged = true;
+                              });
+                            },
                           ),
 
                           SS16(),
@@ -241,7 +289,11 @@ class _DetailspageState extends State<Detailspage> {
                             labelText: 'Date of birth',
                             displayValueWhenDisabled: '15/09/1978',
                             selectedDate: _dob,
-                            onDateSelected: (value) {},
+                            onDateSelected: (value) {
+                              setState(() {
+                                personalDetailsChanged = true;
+                              });
+                            },
                             containerWidth: 298,
                             disabled: true,
                           ),
@@ -250,7 +302,11 @@ class _DetailspageState extends State<Detailspage> {
                           //
                           FlagDropdown(
                             labelText: 'Nationality',
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              setState(() {
+                                personalDetailsChanged = true;
+                              });
+                            },
                           ),
 
                           SS16(),
@@ -261,6 +317,11 @@ class _DetailspageState extends State<Detailspage> {
                             containerWidth: 298,
                             isDisabled: true,
                             disabledText: "1234567890123",
+                            onChanged: (value) {
+                              setState(() {
+                                personalDetailsChanged = true;
+                              });
+                            },
                           ),
 
                           SS16(),
@@ -273,7 +334,11 @@ class _DetailspageState extends State<Detailspage> {
                               'Widowed',
                               'Separated',
                             ],
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              setState(() {
+                                personalDetailsChanged = true;
+                              });
+                            },
                             labelText: 'Marital status',
                             containerWidth: 298,
                             hintText: 'Married',
@@ -282,31 +347,47 @@ class _DetailspageState extends State<Detailspage> {
                           //bottom spacing
                           SS40(),
 
-                          widget.eKYCamendment
-                              ? Column(
-                                children: [
-                                  DGPrimaryButton(
-                                    onTap: () {
-                                      setState(() {
-                                        personalDetailsunChanged = true;
-                                      });
-                                    },
-                                    buttonText: 'My details have not changed',
-                                  ),
+                          Column(
+                            children: [
+                              DGPrimaryButton(
+                                onTap: () {
+                                  setState(() {
+                                    personalDetailsunChanged = true;
 
-                                  SS16(),
-                                ],
+                                    //the open and close of accordion
+
+                                    personalDetailsOpen = false;
+                                    addressDetailsOpen = true;
+                                    contactDetailsOpen = false;
+                                    educationDetailsOpen = false;
+                                    financeDetailsOpen = false;
+                                    consentDetailsOpen = false;
+                                  });
+                                },
+                                buttonText: 'My details have not changed',
+                              ),
+
+                              SS16(),
+                            ],
+                          ),
+
+                          personalDetailsChanged
+                              ? DGPrimaryButton(
+                                onTap: () {
+                                  setState(() {
+                                    personalDetailsChanged = true;
+
+                                    personalDetailsOpen = false;
+                                    addressDetailsOpen = true;
+                                    contactDetailsOpen = false;
+                                    educationDetailsOpen = false;
+                                    financeDetailsOpen = false;
+                                    consentDetailsOpen = false;
+                                  });
+                                },
+                                buttonText: 'Update my details',
                               )
                               : NullBox(),
-
-                          DGPrimaryButton(
-                            onTap: () {
-                              setState(() {
-                                personalDetailsChanged = true;
-                              });
-                            },
-                            buttonText: 'Update my details',
-                          ),
 
                           SS40(),
                         ],
@@ -319,6 +400,7 @@ class _DetailspageState extends State<Detailspage> {
 
                 //the addresss
                 MAccordion(
+                  isOpen: addressDetailsOpen,
                   danger:
                       !widget.eKYCamendment
                           ? false
@@ -348,7 +430,11 @@ class _DetailspageState extends State<Detailspage> {
                               'Living with parents',
                               'Renting',
                             ],
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              setState(() {
+                                addressDetailsChanged = true;
+                              });
+                            },
                             labelText: 'Residential status',
                             containerWidth: 298,
                             hintText: 'Mrs',
@@ -359,6 +445,7 @@ class _DetailspageState extends State<Detailspage> {
                           CustomDatePickerField(
                             labelText: 'Residence since date',
                             containerWidth: 298,
+                            //    onDateSelected: ,
                           ),
 
                           SS16(),
@@ -368,6 +455,11 @@ class _DetailspageState extends State<Detailspage> {
                             labelText: 'Address (1)',
                             controller: _addressLine1,
                             containerWidth: 298,
+                            onChanged: (value) {
+                              setState(() {
+                                addressDetailsChanged = true;
+                              });
+                            },
                           ),
 
                           SS16(),
@@ -376,6 +468,11 @@ class _DetailspageState extends State<Detailspage> {
                             labelText: 'Address (2)',
                             controller: _addressLine2,
                             containerWidth: 298,
+                            onChanged: (value) {
+                              setState(() {
+                                addressDetailsChanged = true;
+                              });
+                            },
                           ),
 
                           SS16(),
@@ -384,6 +481,11 @@ class _DetailspageState extends State<Detailspage> {
                             labelText: 'Address (3)',
                             controller: _addressLine3,
                             containerWidth: 298,
+                            onChanged: (value) {
+                              setState(() {
+                                addressDetailsChanged = true;
+                              });
+                            },
                           ),
 
                           SS16(),
@@ -392,6 +494,11 @@ class _DetailspageState extends State<Detailspage> {
                             labelText: 'City',
                             controller: _city,
                             containerWidth: 298,
+                            onChanged: (value) {
+                              setState(() {
+                                addressDetailsChanged = true;
+                              });
+                            },
                           ),
 
                           SS16(),
@@ -400,34 +507,54 @@ class _DetailspageState extends State<Detailspage> {
                             labelText: 'Postal code',
                             controller: _postalCode,
                             containerWidth: 298,
-                          ),
-
-                          SS40(),
-
-                          widget.eKYCamendment
-                              ? Column(
-                                children: [
-                                  DGPrimaryButton(
-                                    onTap: () {
-                                      setState(() {
-                                        addressDetailsunChanged = true;
-                                      });
-                                    },
-                                    buttonText: 'My details have not changed',
-                                  ),
-                                  SS16(),
-                                ],
-                              )
-                              : NullBox(),
-
-                          DGPrimaryButton(
-                            onTap: () {
+                            onChanged: (value) {
                               setState(() {
                                 addressDetailsChanged = true;
                               });
                             },
-                            buttonText: 'Update my details',
                           ),
+
+                          SS40(),
+
+                          Column(
+                            children: [
+                              DGPrimaryButton(
+                                onTap: () {
+                                  setState(() {
+                                    addressDetailsunChanged = true;
+
+                                    //open or close
+                                    personalDetailsOpen = false;
+                                    addressDetailsOpen = false;
+                                    contactDetailsOpen = true;
+                                    educationDetailsOpen = false;
+                                    financeDetailsOpen = false;
+                                    consentDetailsOpen = false;
+                                  });
+                                },
+                                buttonText: 'My details have not changed',
+                              ),
+                              SS16(),
+                            ],
+                          ),
+
+                          addressDetailsChanged
+                              ? DGPrimaryButton(
+                                onTap: () {
+                                  setState(() {
+                                    addressDetailsChanged = true;
+
+                                    personalDetailsOpen = false;
+                                    addressDetailsOpen = false;
+                                    contactDetailsOpen = true;
+                                    educationDetailsOpen = false;
+                                    financeDetailsOpen = false;
+                                    consentDetailsOpen = false;
+                                  });
+                                },
+                                buttonText: 'Update my details',
+                              )
+                              : NullBox(),
 
                           SS40(),
                         ],
@@ -438,6 +565,7 @@ class _DetailspageState extends State<Detailspage> {
 
                 //contact details
                 MAccordion(
+                  isOpen: contactDetailsOpen,
                   danger:
                       !widget.eKYCamendment
                           ? false
@@ -468,6 +596,7 @@ class _DetailspageState extends State<Detailspage> {
                               print('Full number: $value');
                               setState(() {
                                 mobileChanged = true;
+                                contactDetailsChanged = true;
                               });
                             },
                           ),
@@ -480,6 +609,7 @@ class _DetailspageState extends State<Detailspage> {
                             onChanged: (value) {
                               setState(() {
                                 emailChanged = true;
+                                contactDetailsChanged = true;
                               });
                             },
                           ),
@@ -487,7 +617,11 @@ class _DetailspageState extends State<Detailspage> {
                           SS16(),
                           CustomDropdown(
                             items: ['Email', 'Whatsapp', 'SMS'],
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              setState(() {
+                                contactDetailsChanged = true;
+                              });
+                            },
                             labelText: 'Preferred channel of communication',
                             containerWidth: 298,
                             hintText: 'Email',
@@ -496,38 +630,72 @@ class _DetailspageState extends State<Detailspage> {
                           SS16(),
                           CustomDropdown(
                             items: ['English', 'French'],
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              setState(() {
+                                contactDetailsChanged = true;
+                              });
+                            },
                             labelText: 'Preferred language of communication',
                             containerWidth: 298,
                             hintText: 'English',
                           ),
 
+                          SS16(),
+                          CustomDropdown(
+                            items: [
+                              'Rose hill',
+                              'Port Louis',
+                              'Caudan',
+                              'Bell Village',
+                            ],
+                            onChanged: (value) {
+                              widget.preferredBranch = value;
+                              contactDetailsChanged = true;
+                            },
+                            labelText: 'Preferred branch',
+                            containerWidth: 298,
+                            hintText: 'Rose hill',
+                          ),
                           SS40(),
 
-                          widget.eKYCamendment
-                              ? Column(
-                                children: [
-                                  DGPrimaryButton(
-                                    onTap: () {
-                                      setState(() {
-                                        contactDetailsunChanged = true;
-                                      });
-                                    },
-                                    buttonText: 'My details have not changed',
-                                  ),
-                                  SS16(),
-                                ],
+                          Column(
+                            children: [
+                              DGPrimaryButton(
+                                onTap: () {
+                                  setState(() {
+                                    contactDetailsunChanged = true;
+
+                                    personalDetailsOpen = false;
+                                    addressDetailsOpen = false;
+                                    contactDetailsOpen = false;
+                                    educationDetailsOpen = true;
+                                    financeDetailsOpen = false;
+                                    consentDetailsOpen = false;
+                                  });
+                                },
+                                buttonText: 'My details have not changed',
+                              ),
+                              SS16(),
+                            ],
+                          ),
+
+                          contactDetailsChanged
+                              ? DGPrimaryButton(
+                                onTap: () {
+                                  setState(() {
+                                    contactDetailsChanged = true;
+
+                                    personalDetailsOpen = false;
+                                    addressDetailsOpen = false;
+                                    contactDetailsOpen = false;
+                                    educationDetailsOpen = true;
+                                    financeDetailsOpen = false;
+                                    consentDetailsOpen = false;
+                                  });
+                                },
+                                buttonText: 'Update my details',
                               )
                               : NullBox(),
-
-                          DGPrimaryButton(
-                            onTap: () {
-                              setState(() {
-                                contactDetailsChanged = true;
-                              });
-                            },
-                            buttonText: 'Update my details',
-                          ),
 
                           SS40(),
                         ],
@@ -538,6 +706,7 @@ class _DetailspageState extends State<Detailspage> {
 
                 //education and empolyment
                 MAccordion(
+                  isOpen: educationDetailsOpen,
                   danger:
                       !widget.eKYCamendment
                           ? false
@@ -571,7 +740,11 @@ class _DetailspageState extends State<Detailspage> {
                               'Master\'s Degree',
                               'Doctorate / PhD',
                             ],
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              setState(() {
+                                educationDetailsChanged = true;
+                              });
+                            },
                             labelText: 'Education level',
                             containerWidth: 298,
                             hintText: 'University / Bachelor\'s Degree',
@@ -596,6 +769,10 @@ class _DetailspageState extends State<Detailspage> {
                                   emplyedType = 'eish';
                                 });
                               }
+
+                              setState(() {
+                                educationDetailsChanged = true;
+                              });
                             },
 
                             labelText: 'Employment type',
@@ -621,7 +798,11 @@ class _DetailspageState extends State<Detailspage> {
                                       'New Mauritius Hotels Ltd',
                                       'Mauritius Commercial Bank (MCB)',
                                     ],
-                                    onChanged: (value) {},
+                                    onChanged: (value) {
+                                      setState(() {
+                                        educationDetailsChanged = true;
+                                      });
+                                    },
                                     labelText: 'Employer',
                                     containerWidth: 298,
                                     hintText: 'Mauritius Commercial Bank (MCB)',
@@ -687,7 +868,9 @@ class _DetailspageState extends State<Detailspage> {
                                     fieldWidth: 298,
                                     controller: _customerNumberController,
                                     onChanged: (value) {
-                                      // handle change
+                                      setState(() {
+                                        educationDetailsChanged = true;
+                                      });
                                     },
                                   ),
                                 ],
@@ -709,7 +892,11 @@ class _DetailspageState extends State<Detailspage> {
 
                                       'Other',
                                     ],
-                                    onChanged: (value) {},
+                                    onChanged: (value) {
+                                      setState(() {
+                                        educationDetailsChanged = true;
+                                      });
+                                    },
                                     labelText: 'Unemployment type',
                                     containerWidth: 298,
                                     hintText: 'Please select an option',
@@ -722,7 +909,9 @@ class _DetailspageState extends State<Detailspage> {
                                     fieldWidth: 298,
                                     controller: _customerNumberController,
                                     onChanged: (value) {
-                                      // handle change
+                                      setState(() {
+                                        educationDetailsChanged = true;
+                                      });
                                     },
                                   ),
                                 ],
@@ -732,30 +921,44 @@ class _DetailspageState extends State<Detailspage> {
                           // the buttons
                           SS40(),
 
-                          widget.eKYCamendment
-                              ? Column(
-                                children: [
-                                  DGPrimaryButton(
-                                    onTap: () {
-                                      setState(() {
-                                        educationDetailsunChanged = true;
-                                      });
-                                    },
-                                    buttonText: 'My details have not changed',
-                                  ),
-                                  SS16(),
-                                ],
+                          Column(
+                            children: [
+                              DGPrimaryButton(
+                                onTap: () {
+                                  setState(() {
+                                    educationDetailsunChanged = true;
+
+                                    personalDetailsOpen = false;
+                                    addressDetailsOpen = false;
+                                    contactDetailsOpen = false;
+                                    educationDetailsOpen = false;
+                                    financeDetailsOpen = true;
+                                    consentDetailsOpen = false;
+                                  });
+                                },
+                                buttonText: 'My details have not changed',
+                              ),
+                              SS16(),
+                            ],
+                          ),
+
+                          educationDetailsChanged
+                              ? DGPrimaryButton(
+                                onTap: () {
+                                  setState(() {
+                                    educationDetailsChanged = true;
+
+                                    personalDetailsOpen = false;
+                                    addressDetailsOpen = false;
+                                    contactDetailsOpen = false;
+                                    educationDetailsOpen = false;
+                                    financeDetailsOpen = true;
+                                    consentDetailsOpen = false;
+                                  });
+                                },
+                                buttonText: 'Update my details',
                               )
                               : NullBox(),
-
-                          DGPrimaryButton(
-                            onTap: () {
-                              setState(() {
-                                educationDetailsChanged = true;
-                              });
-                            },
-                            buttonText: 'Update my details',
-                          ),
 
                           SS40(),
                         ],
@@ -766,6 +969,7 @@ class _DetailspageState extends State<Detailspage> {
 
                 //the financial details
                 MAccordion(
+                  isOpen: financeDetailsOpen,
                   danger:
                       !widget.eKYCamendment
                           ? false
@@ -793,6 +997,10 @@ class _DetailspageState extends State<Detailspage> {
                             labelText: 'Monthly income',
                             onChanged: (currency, amount) {
                               print('Selected: $currency, Amount: $amount');
+
+                              setState(() {
+                                financeDetailsChanged = true;
+                              });
                             },
                             currencyFieldWidth: 110,
                             amountFieldWidth: 182,
@@ -811,7 +1019,11 @@ class _DetailspageState extends State<Detailspage> {
                             ],
                             selectedValues: selectedList,
                             onChanged: (newList) {
-                              setState(() => selectedList = newList);
+                              setState(() {
+                                selectedList = newList;
+
+                                financeDetailsChanged = true;
+                              });
                             },
                             labelText: 'Source of wealth',
                             containerWidth: 298,
@@ -823,42 +1035,65 @@ class _DetailspageState extends State<Detailspage> {
                             labelText: 'Tax number',
                             controller: _taxNumber,
                             fieldWidth: 298,
+                            onChanged: (value) {
+                              setState(() {
+                                financeDetailsChanged = true;
+                              });
+                            },
                           ),
 
                           SS16(),
 
                           FlagDropdown(
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              setState(() {
+                                financeDetailsChanged = true;
+                              });
+                            },
                             labelText: 'Tax country',
                           ),
 
                           //bottom spacing
                           SS40(),
 
-                          widget.eKYCamendment
-                              ? Column(
-                                children: [
-                                  DGPrimaryButton(
-                                    onTap: () {
-                                      setState(() {
-                                        financeDetailsunChanged = true;
-                                      });
-                                    },
-                                    buttonText: 'My details have not changed',
-                                  ),
-                                  SS16(),
-                                ],
+                          Column(
+                            children: [
+                              DGPrimaryButton(
+                                onTap: () {
+                                  setState(() {
+                                    financeDetailsunChanged = true;
+
+                                    personalDetailsOpen = false;
+                                    addressDetailsOpen = false;
+                                    contactDetailsOpen = false;
+                                    educationDetailsOpen = false;
+                                    financeDetailsOpen = false;
+                                    consentDetailsOpen = true;
+                                  });
+                                },
+                                buttonText: 'My details have not changed',
+                              ),
+                              SS16(),
+                            ],
+                          ),
+
+                          financeDetailsChanged
+                              ? DGPrimaryButton(
+                                onTap: () {
+                                  setState(() {
+                                    financeDetailsChanged = true;
+
+                                    personalDetailsOpen = false;
+                                    addressDetailsOpen = false;
+                                    contactDetailsOpen = false;
+                                    educationDetailsOpen = false;
+                                    financeDetailsOpen = false;
+                                    consentDetailsOpen = true;
+                                  });
+                                },
+                                buttonText: 'Update my details',
                               )
                               : NullBox(),
-
-                          DGPrimaryButton(
-                            onTap: () {
-                              setState(() {
-                                financeDetailsChanged = true;
-                              });
-                            },
-                            buttonText: 'Update my details',
-                          ),
 
                           SS40(),
                         ],
@@ -869,6 +1104,7 @@ class _DetailspageState extends State<Detailspage> {
 
                 //consents
                 MAccordion(
+                  isOpen: consentDetailsOpen,
                   danger:
                       !widget.eKYCamendment
                           ? false
@@ -887,6 +1123,7 @@ class _DetailspageState extends State<Detailspage> {
                       onChanged: (value) {
                         setState(() {
                           marketConsent = value;
+                          consentsDetailsChanged = true;
                         });
                       },
                     ),
@@ -901,6 +1138,7 @@ class _DetailspageState extends State<Detailspage> {
                       onChanged: (value) {
                         setState(() {
                           consentCKYC = value;
+                          consentsDetailsChanged = true;
                         });
                       },
                     ),
@@ -908,31 +1146,43 @@ class _DetailspageState extends State<Detailspage> {
                     //bottom spacing
                     SS40(),
 
-                    widget.eKYCamendment
-                        ? Column(
-                          children: [
-                            DGPrimaryButton(
-                              onTap: () {
-                                setState(() {
-                                  consentsDetailsunChanged = true;
-                                });
-                              },
-                              buttonText: 'My details have not changed',
-                            ),
+                    Column(
+                      children: [
+                        DGPrimaryButton(
+                          onTap: () {
+                            setState(() {
+                              consentsDetailsunChanged = true;
+                              personalDetailsOpen = false;
+                              addressDetailsOpen = false;
+                              contactDetailsOpen = false;
+                              educationDetailsOpen = false;
+                              financeDetailsOpen = false;
+                              consentDetailsOpen = false;
+                            });
+                          },
+                          buttonText: 'My details have not changed',
+                        ),
 
-                            SS16(),
-                          ],
+                        SS16(),
+                      ],
+                    ),
+
+                    financeDetailsChanged
+                        ? DGPrimaryButton(
+                          onTap: () {
+                            setState(() {
+                              consentsDetailsChanged = true;
+                              personalDetailsOpen = false;
+                              addressDetailsOpen = false;
+                              contactDetailsOpen = false;
+                              educationDetailsOpen = false;
+                              financeDetailsOpen = false;
+                              consentDetailsOpen = false;
+                            });
+                          },
+                          buttonText: 'Update my details',
                         )
                         : NullBox(),
-
-                    DGPrimaryButton(
-                      onTap: () {
-                        setState(() {
-                          consentsDetailsChanged = true;
-                        });
-                      },
-                      buttonText: 'Update my details',
-                    ),
 
                     SS40(),
                   ],
@@ -965,6 +1215,7 @@ class _DetailspageState extends State<Detailspage> {
                         MaterialPageRoute(
                           builder:
                               (context) => ConsentScreen(
+                                preferredBranch: widget.preferredBranch,
                                 addressChanged: addressDetailsChanged,
                                 emailChanged: emailChanged,
                                 mobileChanged: mobileChanged,
@@ -978,6 +1229,7 @@ class _DetailspageState extends State<Detailspage> {
                         MaterialPageRoute(
                           builder:
                               (context) => AddressPage(
+                                preferredBranch: widget.preferredBranch,
                                 emailChanged: emailChanged,
                                 mobileChanged: mobileChanged,
                               ),
@@ -990,6 +1242,7 @@ class _DetailspageState extends State<Detailspage> {
                         MaterialPageRoute(
                           builder:
                               (context) => DefaultOTPPage(
+                                preferredBranch: widget.preferredBranch,
                                 addressChanged: addressDetailsChanged,
                                 emailChanged: emailChanged,
                                 mobileChanged: mobileChanged,
@@ -1003,6 +1256,7 @@ class _DetailspageState extends State<Detailspage> {
                         MaterialPageRoute(
                           builder:
                               (context) => DefaultOTPPage(
+                                preferredBranch: widget.preferredBranch,
                                 addressChanged: addressDetailsChanged,
                                 emailChanged: emailChanged,
                                 mobileChanged: mobileChanged,

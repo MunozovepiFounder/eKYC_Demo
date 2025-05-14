@@ -84,6 +84,7 @@ class Option1Landing extends StatelessWidget {
                         MaterialPageRoute(
                           builder:
                               (context) => Detailspage(
+                                preferredBranch: 'Rose hill',
                                 newStatus: false,
                                 addressChanged: false,
                                 eKYCamendment: true,

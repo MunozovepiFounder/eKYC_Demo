@@ -12,12 +12,14 @@ class DefaultOTPPage extends StatefulWidget {
   final bool emailChanged;
   final bool mobileChanged;
   final bool addressChanged;
+  String? preferredBranch;
 
   DefaultOTPPage({
     required this.emailChanged,
     required this.mobileChanged,
 
     required this.addressChanged,
+    required this.preferredBranch,
   });
 
   @override
@@ -175,6 +177,7 @@ class _DefaultOTPPageState extends State<DefaultOTPPage> {
                               MaterialPageRoute(
                                 builder:
                                     (context) => Detailspage(
+                                      preferredBranch: widget.preferredBranch,
                                       addressChanged: widget.addressChanged,
                                       newStatus: true,
                                       eKYCamendment: false,
