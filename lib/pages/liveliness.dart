@@ -4,6 +4,8 @@ import 'package:ekyc_prototypes/components/fonts.dart';
 import 'package:ekyc_prototypes/components/layout.dart';
 import 'package:ekyc_prototypes/components/status.dart';
 import 'package:ekyc_prototypes/pages/address.dart';
+import 'package:ekyc_prototypes/pages/emailOTP.dart';
+import 'package:ekyc_prototypes/pages/otp.dart';
 import 'package:flutter/material.dart';
 
 class CameraPreviewScreen extends StatefulWidget {
@@ -60,50 +62,81 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
   }
 
   void _onNext() {
-    if (_isImageCaptured) {
-      if (widget.step == 'selfie') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) => CameraPreviewScreen(
-                  step: 'nicFront',
-                  addressChanged: widget.addressChanged,
-                  emailChanged: widget.emailChanged,
-                  mobileChanged: widget.mobileChanged,
-                ),
-          ),
+    if (!_isImageCaptured) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please take an image first.')),
+      );
+      return;
+    }
+
+    switch (widget.step) {
+      case 'selfie':
+        _navigateToStep('nicFront');
+        break;
+      case 'nicFront':
+        _navigateToStep('nicBack');
+        break;
+      case 'nicBack':
+        _navigateAfterNic();
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Invalid step. Please try again.')),
         );
-      } else if (widget.step == 'nicFront') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) => CameraPreviewScreen(
-                  step: 'nicBack',
-                  addressChanged: widget.addressChanged,
-                  emailChanged: widget.emailChanged,
-                  mobileChanged: widget.mobileChanged,
-                ),
-          ),
-        );
-      } else if (widget.step == 'nicBack') {
-        // Redirect to Address Page
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) => AddressPage(
-                  emailChanged: widget.emailChanged,
-                  mobileChanged: widget.mobileChanged,
-                ),
-          ),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(
+    }
+  }
+
+  void _navigateToStep(String nextStep) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => CameraPreviewScreen(
+              step: nextStep,
+              addressChanged: widget.addressChanged,
+              emailChanged: widget.emailChanged,
+              mobileChanged: widget.mobileChanged,
+            ),
+      ),
+    );
+  }
+
+  void _navigateAfterNic() {
+    if (widget.addressChanged) {
+      Navigator.push(
         context,
-      ).showSnackBar(SnackBar(content: Text('Please take an image first.')));
+        MaterialPageRoute(
+          builder:
+              (context) => AddressPage(
+                emailChanged: widget.emailChanged,
+                mobileChanged: widget.mobileChanged,
+              ),
+        ),
+      );
+    } else if (widget.emailChanged) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => EmailOTPPage(
+                addressChanged: widget.addressChanged,
+                emailChanged: widget.emailChanged,
+                mobileChanged: widget.mobileChanged,
+              ),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => DefaultOTPPage(
+                addressChanged: widget.addressChanged,
+                emailChanged: widget.emailChanged,
+                mobileChanged: widget.mobileChanged,
+              ),
+        ),
+      );
     }
   }
 
