@@ -306,7 +306,8 @@ class CustomTextField extends StatelessWidget {
   final void Function(String)? onChanged;
   final double containerWidth;
   final bool isDisabled;
-  final String? disabledText; // NEW: the text to show when disabled
+  final String? disabledText;
+  final bool obscureText; // NEW: for hiding input (e.g. passwords)
 
   const CustomTextField({
     Key? key,
@@ -316,7 +317,8 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     required this.containerWidth,
     this.isDisabled = false,
-    this.disabledText, // NEW
+    this.disabledText,
+    this.obscureText = false, // NEW
   }) : super(key: key);
 
   @override
@@ -352,6 +354,7 @@ class CustomTextField extends StatelessWidget {
               controller: controller,
               onChanged: isDisabled ? null : onChanged,
               enabled: !isDisabled,
+              obscureText: obscureText, // NEW
               style: TextStyle(
                 color: isDisabled ? Colors.grey.shade800 : Colors.black,
               ),

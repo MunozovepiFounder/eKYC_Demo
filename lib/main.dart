@@ -2,6 +2,8 @@ import 'package:ekyc_prototypes/components/colors.dart';
 import 'package:ekyc_prototypes/components/header.dart';
 import 'package:ekyc_prototypes/components/layout.dart';
 import 'package:ekyc_prototypes/components/status.dart';
+import 'package:ekyc_prototypes/investmentJourney/investmentLanding.dart';
+import 'package:ekyc_prototypes/investmentJourney/otp.dart';
 import 'package:ekyc_prototypes/option1/detailsPage.dart';
 import 'package:ekyc_prototypes/option1/landing.dart';
 import 'package:ekyc_prototypes/pages/address.dart';
@@ -25,7 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryRed),
       ),
-      home: Option1Landing(), //change back to the landing
+      home: InvestmentJourney(), //change back to the landing
     );
   }
 }

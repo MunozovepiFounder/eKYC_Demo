@@ -114,16 +114,19 @@ class BodyBold18 extends StatelessWidget {
 class BodyRegular16 extends StatelessWidget {
   final String text;
   final Color color;
+  TextAlign? textAlign;
 
   BodyRegular16({
     required this.text,
-    this.color = Colors.black, // Default color
+    this.color = Colors.black,
+    this.textAlign, // Default color
   });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
+      textAlign: textAlign,
       style: GoogleFonts.lato(
         fontSize: 16,
         fontWeight: FontWeight.w400,

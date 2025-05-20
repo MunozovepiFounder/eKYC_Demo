@@ -5,30 +5,36 @@ import 'package:flutter/material.dart';
 class MPrimaryButton extends StatelessWidget {
   final VoidCallback onTap;
   final String buttonText;
+  final bool enabled;
 
-  MPrimaryButton({required this.onTap, required this.buttonText});
+  MPrimaryButton({
+    required this.onTap,
+    required this.buttonText,
+    this.enabled = true, // default is enabled
+  });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 20.0, left: 20),
+    final backgroundColor =
+        enabled ? const Color(0xFFC8102E) : Colors.grey.shade300;
+    final textColor = enabled ? Colors.white : Colors.grey.shade700;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: InkWell(
+        onTap: enabled ? onTap : null, // disables tap if not enabled
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           clipBehavior: Clip.antiAlias,
           decoration: ShapeDecoration(
-            color: const Color(0xFFC8102E) /* brand-primary-500-default */,
+            color: backgroundColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [BodyRegular14(text: buttonText, color: Colors.white)],
+          child: Center(
+            child: BodyRegular14(text: buttonText, color: textColor),
           ),
         ),
       ),
