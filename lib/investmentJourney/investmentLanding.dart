@@ -3,6 +3,7 @@ import 'package:ekyc_prototypes/components/fonts.dart';
 import 'package:ekyc_prototypes/components/header.dart';
 import 'package:ekyc_prototypes/components/input.dart';
 import 'package:ekyc_prototypes/components/layout.dart';
+import 'package:ekyc_prototypes/investmentJourney/services/emailService.dart';
 import 'package:flutter/material.dart';
 
 class InvestmentJourney extends StatefulWidget {
@@ -40,6 +41,8 @@ class _InvestmentJourneyState extends State<InvestmentJourney> {
     _passwordController.dispose();
     super.dispose();
   }
+
+  //send emailer
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +90,8 @@ class _InvestmentJourneyState extends State<InvestmentJourney> {
                     onTap: () {},
                     buttonText: 'Start Journey',
                   ),
+
+                  TextButton(child: Text('hello'), onPressed: sendTestEmail),
                 ],
               ),
             ),
