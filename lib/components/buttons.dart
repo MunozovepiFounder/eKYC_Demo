@@ -6,11 +6,13 @@ class MPrimaryButton extends StatelessWidget {
   final VoidCallback onTap;
   final String buttonText;
   final bool enabled;
+  final String? disabledMessage;
 
   MPrimaryButton({
     required this.onTap,
     required this.buttonText,
-    this.enabled = true, // default is enabled
+    this.enabled = true,
+    this.disabledMessage,
   });
 
   @override
@@ -22,7 +24,18 @@ class MPrimaryButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: InkWell(
-        onTap: enabled ? onTap : null, // disables tap if not enabled
+        onTap: () {
+          if (enabled) {
+            onTap();
+          } else if (disabledMessage != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(disabledMessage!),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+        },
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryRed),
       ),
-      home: InvestmentJourney(), //change back to the landing
+      home: Option1Landing(), //change back to the landing
     );
   }
 }

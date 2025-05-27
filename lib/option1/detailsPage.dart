@@ -1191,10 +1191,20 @@ class _DetailspageState extends State<Detailspage> {
                 //the final buttons
                 SS40(),
                 MPrimaryButton(
+                  disabledMessage:
+                      'Please confirm all your details are up to date',
+                  enabled:
+                      (personalDetailsChanged || personalDetailsunChanged) &&
+                      (contactDetailsChanged || contactDetailsunChanged) &&
+                      (addressDetailsChanged || addressDetailsunChanged) &&
+                      (educationDetailsChanged || educationDetailsunChanged) &&
+                      (financeDetailsChanged || financeDetailsunChanged) &&
+                      (consentsDetailsChanged || consentsDetailsunChanged),
                   onTap: () {
                     if (!personalDetailsChanged &&
                         !contactDetailsChanged &&
                         !addressDetailsChanged &&
+                        !addressDetailsunChanged &&
                         !educationDetailsChanged &&
                         !financeDetailsChanged &&
                         !consentsDetailsChanged &&

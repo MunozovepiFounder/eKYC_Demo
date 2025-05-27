@@ -91,7 +91,7 @@ class _AddressPageState extends State<AddressPage> {
                       children: [
                         SS24(),
                         UploadBox(
-                          labelText: 'Please upload your birth certificate',
+                          labelText: 'Please upload your proof of address',
                           containerWidth: 298,
                           onFilePicked: (file) {
                             print("File picked: ${file.name}");
