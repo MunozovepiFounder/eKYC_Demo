@@ -187,6 +187,7 @@ class MAccordion extends StatefulWidget {
   final List<Widget> children;
   final bool danger;
   final bool isOpen;
+  final bool completed; // New optional parameter
 
   const MAccordion({
     super.key,
@@ -194,6 +195,7 @@ class MAccordion extends StatefulWidget {
     required this.children,
     this.danger = false,
     this.isOpen = false,
+    this.completed = false, // Default to false
   });
 
   @override
@@ -202,6 +204,7 @@ class MAccordion extends StatefulWidget {
 
 class _MAccordionState extends State<MAccordion> {
   late bool _isOpen;
+  final GlobalKey _headerKey = GlobalKey();
 
   @override
   void initState() {
@@ -212,17 +215,33 @@ class _MAccordionState extends State<MAccordion> {
   @override
   void didUpdateWidget(covariant MAccordion oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // When the parent updates isOpen, update internal state
     if (oldWidget.isOpen != widget.isOpen) {
       setState(() {
         _isOpen = widget.isOpen;
       });
+      _scrollToHeader();
     }
   }
 
   void _toggle() {
     setState(() {
       _isOpen = !_isOpen;
+    });
+    if (_isOpen) {
+      _scrollToHeader();
+    }
+  }
+
+  void _scrollToHeader() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_headerKey.currentContext != null) {
+        Scrollable.ensureVisible(
+          _headerKey.currentContext!,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          alignment: 0,
+        );
+      }
     });
   }
 
@@ -251,6 +270,7 @@ class _MAccordionState extends State<MAccordion> {
       child: Column(
         children: [
           InkWell(
+            key: _headerKey,
             onTap: _toggle,
             borderRadius: BorderRadius.circular(8),
             child: Padding(
@@ -258,7 +278,21 @@ class _MAccordionState extends State<MAccordion> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  BodyBold16(text: widget.label),
+                  Row(
+                    children: [
+                      // Show green check only when completed is true and accordion is closed
+                      if (widget.completed && !_isOpen)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: Icon(
+                            Icons.check_circle,
+                            color: AppColors.statusGreen,
+                            size: 20,
+                          ),
+                        ),
+                      BodyBold16(text: widget.label),
+                    ],
+                  ),
                   AnimatedRotation(
                     turns: _isOpen ? 0.5 : 0,
                     duration: const Duration(milliseconds: 200),

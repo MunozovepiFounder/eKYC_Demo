@@ -207,7 +207,9 @@ class _DetailspageState extends State<Detailspage> {
                 ),
                 SS24(),
                 MAccordion(
-                  isOpen: personalDetailsOpen,
+                  completed:
+                      (personalDetailsChanged || personalDetailsunChanged),
+                  isOpen: (widget.newStatus) ? false : personalDetailsOpen,
                   danger:
                       !widget.eKYCamendment
                           ? false
@@ -400,6 +402,7 @@ class _DetailspageState extends State<Detailspage> {
 
                 //the addresss
                 MAccordion(
+                  completed: (addressDetailsChanged || addressDetailsunChanged),
                   isOpen: addressDetailsOpen,
                   danger:
                       !widget.eKYCamendment
@@ -565,6 +568,7 @@ class _DetailspageState extends State<Detailspage> {
 
                 //contact details
                 MAccordion(
+                  completed: (contactDetailsChanged || contactDetailsunChanged),
                   isOpen: contactDetailsOpen,
                   danger:
                       !widget.eKYCamendment
@@ -706,6 +710,8 @@ class _DetailspageState extends State<Detailspage> {
 
                 //education and empolyment
                 MAccordion(
+                  completed:
+                      (educationDetailsChanged || educationDetailsunChanged),
                   isOpen: educationDetailsOpen,
                   danger:
                       !widget.eKYCamendment
@@ -715,7 +721,7 @@ class _DetailspageState extends State<Detailspage> {
                           ? true
                           : false,
 
-                  label: 'Education and employment details',
+                  label: 'Employment details',
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -969,6 +975,7 @@ class _DetailspageState extends State<Detailspage> {
 
                 //the financial details
                 MAccordion(
+                  completed: (financeDetailsChanged || financeDetailsunChanged),
                   isOpen: financeDetailsOpen,
                   danger:
                       !widget.eKYCamendment
@@ -1104,6 +1111,7 @@ class _DetailspageState extends State<Detailspage> {
 
                 //consents
                 MAccordion(
+                  completed: (consentDetailsOpen || consentsDetailsunChanged),
                   isOpen: consentDetailsOpen,
                   danger:
                       !widget.eKYCamendment
@@ -1188,105 +1196,141 @@ class _DetailspageState extends State<Detailspage> {
                   ],
                 ),
 
-                //the final buttons
-                SS40(),
-                MPrimaryButton(
-                  disabledMessage:
-                      'Please confirm all your details are up to date',
-                  enabled:
-                      (personalDetailsChanged || personalDetailsunChanged) &&
-                      (contactDetailsChanged || contactDetailsunChanged) &&
-                      (addressDetailsChanged || addressDetailsunChanged) &&
-                      (educationDetailsChanged || educationDetailsunChanged) &&
-                      (financeDetailsChanged || financeDetailsunChanged) &&
-                      (consentsDetailsChanged || consentsDetailsunChanged),
-                  onTap: () {
-                    if (!personalDetailsChanged &&
-                        !contactDetailsChanged &&
-                        !addressDetailsChanged &&
-                        !addressDetailsunChanged &&
-                        !educationDetailsChanged &&
-                        !financeDetailsChanged &&
-                        !consentsDetailsChanged &&
-                        !personalDetailsunChanged &&
-                        !consentsDetailsunChanged &&
-                        !educationDetailsunChanged &&
-                        !financeDetailsunChanged &&
-                        !consentsDetailsunChanged) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('No changes made, you cannot proceed'),
+                (widget.newStatus)
+                    ? NullBox()
+                    : Column(
+                      children: [
+                        SS40(),
+                        MPrimaryButton(
+                          disabledMessage:
+                              'Please confirm all your details are up to date',
+                          enabled:
+                              (personalDetailsChanged ||
+                                  personalDetailsunChanged) &&
+                              (contactDetailsChanged ||
+                                  contactDetailsunChanged) &&
+                              (addressDetailsChanged ||
+                                  addressDetailsunChanged) &&
+                              (educationDetailsChanged ||
+                                  educationDetailsunChanged) &&
+                              (financeDetailsChanged ||
+                                  financeDetailsunChanged) &&
+                              (consentsDetailsChanged ||
+                                  consentsDetailsunChanged),
+                          onTap: () {
+                            if (!personalDetailsChanged &&
+                                !contactDetailsChanged &&
+                                !addressDetailsChanged &&
+                                !addressDetailsunChanged &&
+                                !educationDetailsChanged &&
+                                !financeDetailsChanged &&
+                                !consentsDetailsChanged &&
+                                !personalDetailsunChanged &&
+                                !consentsDetailsunChanged &&
+                                !educationDetailsunChanged &&
+                                !financeDetailsunChanged &&
+                                !consentsDetailsunChanged) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'No changes made, you cannot proceed',
+                                  ),
+                                ),
+                              );
+                            } else if (personalDetailsChanged) {
+                              // Navigate to LivelinessTest if personalDetailsChanged is true
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => ConsentScreen(
+                                        preferredBranch: widget.preferredBranch,
+                                        addressChanged: addressDetailsChanged,
+                                        emailChanged: emailChanged,
+                                        mobileChanged: mobileChanged,
+                                      ),
+                                ),
+                              );
+                            } else if (addressDetailsChanged) {
+                              // Navigate to addressDetails page if addressDetailsChanged is true
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => AddressPage(
+                                        preferredBranch: widget.preferredBranch,
+                                        emailChanged: emailChanged,
+                                        mobileChanged: mobileChanged,
+                                      ),
+                                ),
+                              );
+                            } else if (contactDetailsChanged) {
+                              // Navigate to OTP page if contactDetailsChanged is true
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => DefaultOTPPage(
+                                        preferredBranch: widget.preferredBranch,
+                                        addressChanged: addressDetailsChanged,
+                                        emailChanged: emailChanged,
+                                        mobileChanged: mobileChanged,
+                                      ),
+                                ),
+                              );
+                            } else {
+                              // Default fallback if any other change triggers
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => DefaultOTPPage(
+                                        preferredBranch: widget.preferredBranch,
+                                        addressChanged: addressDetailsChanged,
+                                        emailChanged: emailChanged,
+                                        mobileChanged: mobileChanged,
+                                      ),
+                                ),
+                              );
+                            }
+                          },
+                          buttonText: 'Next',
                         ),
-                      );
-                    } else if (personalDetailsChanged) {
-                      // Navigate to LivelinessTest if personalDetailsChanged is true
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => ConsentScreen(
-                                preferredBranch: widget.preferredBranch,
-                                addressChanged: addressDetailsChanged,
-                                emailChanged: emailChanged,
-                                mobileChanged: mobileChanged,
-                              ),
-                        ),
-                      );
-                    } else if (addressDetailsChanged) {
-                      // Navigate to addressDetails page if addressDetailsChanged is true
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => AddressPage(
-                                preferredBranch: widget.preferredBranch,
-                                emailChanged: emailChanged,
-                                mobileChanged: mobileChanged,
-                              ),
-                        ),
-                      );
-                    } else if (contactDetailsChanged) {
-                      // Navigate to OTP page if contactDetailsChanged is true
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => DefaultOTPPage(
-                                preferredBranch: widget.preferredBranch,
-                                addressChanged: addressDetailsChanged,
-                                emailChanged: emailChanged,
-                                mobileChanged: mobileChanged,
-                              ),
-                        ),
-                      );
-                    } else {
-                      // Default fallback if any other change triggers
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => DefaultOTPPage(
-                                preferredBranch: widget.preferredBranch,
-                                addressChanged: addressDetailsChanged,
-                                emailChanged: emailChanged,
-                                mobileChanged: mobileChanged,
-                              ),
-                        ),
-                      );
-                    }
-                  },
-                  buttonText: 'Next',
-                ),
-                SS24(),
+                      ],
+                    ),
 
-                DGOutlinedButton(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => Option1Landing()),
-                    );
-                  },
-                  buttonText: 'Cancel',
-                ),
+                //the final buttons
+                (widget.newStatus)
+                    ? Column(
+                      children: [
+                        SS24(),
+                        DGOutlinedButton(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => Option1Landing(),
+                              ),
+                            );
+                          },
+                          buttonText: 'Done',
+                        ),
+                      ],
+                    )
+                    : Column(
+                      children: [
+                        SS24(),
+                        DGOutlinedButton(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => Option1Landing(),
+                              ),
+                            );
+                          },
+                          buttonText: 'Cancel',
+                        ),
+                      ],
+                    ),
 
                 SS24(),
               ],
