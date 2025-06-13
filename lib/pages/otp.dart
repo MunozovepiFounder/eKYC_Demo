@@ -6,6 +6,8 @@ import 'package:ekyc_prototypes/components/fonts.dart';
 import 'package:ekyc_prototypes/components/layout.dart';
 import 'package:ekyc_prototypes/components/status.dart';
 import 'package:ekyc_prototypes/option1/detailsPage.dart';
+import 'package:ekyc_prototypes/ruppys/details.dart';
+import 'package:ekyc_prototypes/ruppys/success.dart';
 import 'package:flutter/material.dart';
 
 class DefaultOTPPage extends StatefulWidget {
@@ -175,13 +177,7 @@ class _DefaultOTPPageState extends State<DefaultOTPPage> {
                           if (otpValid) {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder:
-                                    (context) => Detailspage(
-                                      preferredBranch: widget.preferredBranch,
-                                      addressChanged: widget.addressChanged,
-                                      newStatus: true,
-                                      eKYCamendment: false,
-                                    ),
+                                builder: (context) => SuccessfulReview(),
                               ),
                             );
                           } else {

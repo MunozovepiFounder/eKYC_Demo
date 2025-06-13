@@ -2,7 +2,9 @@ import 'package:ekyc_prototypes/components/fonts.dart';
 import 'package:flutter/material.dart';
 
 class Header extends StatelessWidget {
-  const Header({super.key});
+  String? headername;
+
+  Header({required this.headername});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class Header extends StatelessWidget {
                     children: [
                       Image.asset('assets/images/logo.png'),
                       SizedBox(width: 16),
-                      Heading03(text: 'Customer Profile'),
+                      Heading03(text: headername ?? 'Customer Profile'),
                     ],
                   ),
                 ],

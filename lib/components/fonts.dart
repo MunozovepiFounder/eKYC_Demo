@@ -26,16 +26,19 @@ class Heading01 extends StatelessWidget {
 class Heading02 extends StatelessWidget {
   final String text;
   final Color color;
+  TextAlign? textAlign;
 
   Heading02({
     required this.text,
-    this.color = Colors.black, // Default color
+    this.color = Colors.black,
+    this.textAlign, // Default color
   });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
+      textAlign: textAlign,
       style: GoogleFonts.lato(
         fontSize: 28,
         fontWeight: FontWeight.w500,
@@ -48,16 +51,19 @@ class Heading02 extends StatelessWidget {
 class Heading03 extends StatelessWidget {
   final String text;
   final Color color;
+  TextAlign? textAlign;
 
   Heading03({
     required this.text,
     this.color = Colors.black, // Default color
+    this.textAlign,
   });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
+      textAlign: textAlign,
       style: GoogleFonts.lato(
         fontSize: 20,
         fontWeight: FontWeight.bold,

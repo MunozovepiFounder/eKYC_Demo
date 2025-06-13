@@ -89,8 +89,9 @@ class SS80 extends StatelessWidget {
 
 class ResponsiveContainer extends StatelessWidget {
   final Widget child;
+  String? headername;
 
-  const ResponsiveContainer({required this.child, super.key});
+  ResponsiveContainer({required this.child, this.headername, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +104,12 @@ class ResponsiveContainer extends StatelessWidget {
         width: containerWidth,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Column(children: [Header(), child]),
+          child: Column(
+            children: [
+              Header(headername: headername ?? 'Customer Profile'),
+              child,
+            ],
+          ),
         ),
       ),
     );
